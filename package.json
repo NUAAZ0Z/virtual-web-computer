@@ -1,0 +1,19 @@
+{
+  "name": "notes",
+  "version": "0.0.1",
+  "license": "",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.2.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.4.0",
+    "@vue/compiler-sfc": "^3.2.2",
+    "sass": "^1.37.5",
+    "vite": "^2.4.4"
+  }
+}
