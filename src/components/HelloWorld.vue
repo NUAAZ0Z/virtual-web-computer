@@ -22,10 +22,10 @@
 import { defineProps, reactive } from 'vue'
 
 defineProps({
-  msg: String
+  msg: String,
 })
 
-const state = reactive({ count: 0 })
+const state = reactive({count: 0})
 </script>
 
 <style scoped>
