@@ -5,4 +5,5 @@ export default {
     title: '计算机',
     icon: 'computer.svg',
     component: Computer,
+    disableMinimize: true,
 }

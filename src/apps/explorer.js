@@ -6,4 +6,5 @@ export default {
     icon: 'explorer.svg',
     component: Explorer,
     dockLocation: 'center',
+    enableMenu: true,
 }

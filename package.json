@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "lint": "eslint --ext .js,.vue ./src --fix --fix-type problem",
+    "lint": "eslint --ext .js,.vue ./src --fix --fix-type problem,suggestion",
     "prepare": "husky install"
   },
   "dependencies": {
