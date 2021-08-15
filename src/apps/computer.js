@@ -6,4 +6,6 @@ export default {
     icon: 'computer.svg',
     component: Computer,
     disableMinimize: true,
+    bgColor: '#EAEAEA',
+    transparentTitleBar: true,
 }

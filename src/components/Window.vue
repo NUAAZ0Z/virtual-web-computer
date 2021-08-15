@@ -1,12 +1,11 @@
 <template>
-  <div class="window">
-    <div class="title-bar">
-      <div class="icon">
-        <img :src="'/icons/uos/' + config.icon" alt="" />
-      </div>
+  <div class="window" :style="windowStyle" :class="[windowStatusClass]">
+    <div class="title-bar" :class="{'title-bar-transparent': config.transparentTitleBar}">
+      <img class="icon" :src="'/icons/uos/' + config.icon" alt="" />
       <div class="title">
         <span>{{ config.title }}</span>
       </div>
+      <div class="space"></div>
       <div class="switch">
         <div v-if="config.enableMenu" class="menu">
           <i class="iconfont icon-menu"></i>
@@ -40,20 +39,187 @@ import {
   WINDOW_MINIMIZED,
   WINDOW_MAXIMIZED,
 } from '../common/window-state-manager'
+import { computed, ref, watch } from 'vue'
+import { ACTIVE_APP } from '../store/state.type'
 
-defineProps({
+const props = defineProps({
   config: Object,
 })
+const windowStyle = {
+  backgroundColor: props.config.bgColor,
+}
+const windowStatusClass = ref('')
 
 const store = useStore()
+const {windowStatus, oldWindowStatus, minimizeWindow, maximizeWindow, unMaximizeWindow} = useWindowStateManager()
+const activeApp = computed(() => store.state.apps[ACTIVE_APP])
+
+// 关闭应用
 const killApp = (appName) => {
-  store.commit(UNMOUNT_APP, appName)
+  windowStatusClass.value = 'window-status-closed'
+  // 在窗口关闭动画结束后再卸载
+  setTimeout(() => {
+    store.commit(UNMOUNT_APP, appName)
+  }, 200)
 }
 
-const {windowStatus, minimizeWindow, maximizeWindow, unMaximizeWindow} = useWindowStateManager()
-
+// 监视窗口状态，更换样式类
+watch(windowStatus, value => {
+  if (value === WINDOW_MAXIMIZED) {
+    windowStatusClass.value = 'window-status-maximized'
+  } else if (value === WINDOW_MINIMIZED) {
+    windowStatusClass.value = 'window-status-minimized'
+  } else {
+    windowStatusClass.value = ''
+  }
+})
+// 监视当前活跃的应用，如果是当前应用，则让窗口状态恢复，如最小化后重新打开
+watch(activeApp, val => {
+  if (props.config.name === val) {
+    windowStatus.value = oldWindowStatus.value
+  }
+})
 </script>
 
 <style scoped lang="scss">
+@use "sass:math";
+@import "../assets/var";
 
+@keyframes window-in {
+  0% {
+    transform: scale(0.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes window-close {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+
+@keyframes window-minimize {
+  0% {
+    opacity: 1;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0);
+    bottom: $dock-height + $dock-margin;
+  }
+}
+
+.window {
+  position: absolute;
+  opacity: 1;
+  top: calc(50% - #{math.div($window-default-height, 2)});
+  left: calc(50% - #{math.div($window-default-width, 2)});
+  background-color: $window-background-color;
+  width: $window-default-width;
+  height: $window-default-height;
+  max-height: calc(100% - #{$dock-height + $dock-margin * 2});
+  border-radius: $window-border-radius;
+  box-shadow: $window-shadow;
+  animation: window-in .2s ease-out;
+  transition: all .1s ease-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+  //消除transition，否则每次位置更新都需要动画过度渲染，导致拖拽不跟手
+  &-dragged {
+    transition: none ! important;
+  }
+}
+
+.window-status-closed {
+  animation: window-close .2s ease-in forwards;
+}
+
+.window-status-minimized {
+  animation: window-close .2s ease-in forwards;
+  margin: unset;
+}
+
+.window-status-maximized {
+  left: $window-maximized-margin !important;
+  top: $window-maximized-margin !important;
+  width: calc(100% - #{$window-maximized-margin * 2}) !important;
+  height: calc(100% - #{$dock-height + $dock-margin * 2 + $window-maximized-margin * 2}) !important;
+}
+
+.window .title-bar {
+  user-select: none;
+  height: $window-title-height;
+  width: 100%;
+  background-color: white;
+  border-top-right-radius: $window-border-radius;
+  border-top-left-radius: $window-border-radius;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  align-items: center;
+
+  &-transparent {
+    background: transparent !important;
+  }
+
+  .icon {
+    width: 28px;
+    margin-left: $window-border-radius;
+    height: 28px;
+    object-fit: cover;
+
+    &:hover {
+      filter: contrast(200%);
+    }
+  }
+
+  .title {
+    text-align: left;
+    font-size: 14px;
+    line-height: $window-title-height;
+    padding: 0 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .space {
+    flex: 1;
+  }
+
+  .switch {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-content: center;
+    border-top-right-radius: $window-border-radius;
+    height: 100%;
+
+    > div {
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      width: 48px;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    > div:last-child {
+      border-top-right-radius: $window-border-radius;
+    }
+
+    > div:hover {
+      background-color: #F8F8F8;
+      font-weight: bold;
+    }
+  }
+}
 </style>

@@ -7,4 +7,5 @@ export default {
     component: Explorer,
     dockLocation: 'center',
     enableMenu: true,
+    enableMaximize: true,
 }

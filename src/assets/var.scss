@@ -9,3 +9,15 @@ $dock-tooltip-background-color: #CBCBCF;
 
 // Desktop
 $desktop-entry-gap: 12px;
+
+// Window
+$window-border-radius: 18px;
+//$window-background-color: #F9F9F9;
+$window-background-color: #F8F8F8;
+$window-title-height: 42px;
+$window-default-height: 540px;
+$window-default-width: 960px;
+$window-switch-color: #333;
+$window-maximized-margin: 2px;
+$window-tab-border: 2px solid rgba(0, 0, 0, .2);
+$window-shadow: 0 0 40px 10px rgba(black, .2);

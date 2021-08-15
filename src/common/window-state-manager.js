@@ -1,4 +1,6 @@
 import { ref } from 'vue'
+import { useStore } from 'vuex'
+import { CLEAR_ACTIVE_APP } from '../store/mutation.type'
 
 export const WINDOW_NORMAL = 0x1
 export const WINDOW_MINIMIZED = 0x1 << 1
@@ -9,9 +11,12 @@ export function useWindowStateManager() {
     let windowZIndex = 10000
     const windowStatus = ref(WINDOW_NORMAL)
     const oldWindowStatus = ref(WINDOW_NORMAL)
+    const store = useStore()
 
     const minimizeWindow = () => {
+        oldWindowStatus.value = windowStatus.value
         windowStatus.value = WINDOW_MINIMIZED
+        store.commit(CLEAR_ACTIVE_APP)
     }
 
     const maximizeWindow = () => {
@@ -20,10 +25,6 @@ export function useWindowStateManager() {
 
     const unMaximizeWindow = () => {
         windowStatus.value = WINDOW_NORMAL
-    }
-
-    const unMinimizeWindow = () => {
-        windowStatus.value = oldWindowStatus.value
     }
 
     const updateZIndex = () => {
@@ -37,6 +38,5 @@ export function useWindowStateManager() {
         minimizeWindow,
         maximizeWindow,
         unMaximizeWindow,
-        unMinimizeWindow,
     }
 }
