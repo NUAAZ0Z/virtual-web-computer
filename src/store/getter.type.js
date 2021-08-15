@@ -1,0 +1,6 @@
+export const GET_APP = 'GET_APP'
+export const APP_AT_DESKTOP = 'APP_AT_DESKTOP'
+export const APP_MOUNTED = 'APP_MOUNTED'
+export const APP_AT_DOCK_LAUNCHER = 'APP_AT_DOCK_LAUNCHER'
+export const APP_AT_DOCK_CENTER = 'APP_AT_DOCK_CENTER'
+export const APP_AT_DOCK_TRAY = 'APP_AT_DOCK_TRAY'

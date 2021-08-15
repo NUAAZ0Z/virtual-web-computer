@@ -1,0 +1,2 @@
+export const ACTIVE_APP = 'ACTIVE_APP'
+export const APP_MOUNTED_NAMES = 'APP_MOUNTED_NAMES'

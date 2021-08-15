@@ -12,5 +12,6 @@ module.exports = {
         // 关掉prop默认值的建议
         'vue/require-default-prop': 'off',
         'vue/max-attributes-per-line': 'off',
+        'vue/html-self-closing': 'off',
     },
 }
