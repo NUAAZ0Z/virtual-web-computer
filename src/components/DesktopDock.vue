@@ -54,6 +54,15 @@ const appAtDockTray = computed(() => store.getters[APP_AT_DOCK_TRAY])
 @use "sass:math";
 @import "../assets/var";
 
+@keyframes dock-in {
+  0% {
+    bottom: -$dock-margin * 4 - $dock-height;
+  }
+  100% {
+    bottom: $dock-margin;
+  }
+}
+
 .desktop-dock {
   position: fixed;
   margin: $dock-margin;
@@ -66,6 +75,7 @@ const appAtDockTray = computed(() => store.getters[APP_AT_DOCK_TRAY])
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  animation: dock-in .8s ease-out;
 
   &:before {
     content: '';

@@ -85,6 +85,7 @@ $desktop-entry-height: 108px;
       overflow-wrap: break-word;
       text-overflow: ellipsis;
       white-space: nowrap;
+      text-shadow: 0 0 4px black;
     }
   }
 }
