@@ -39,19 +39,27 @@ import {
   WINDOW_MINIMIZED,
   WINDOW_MAXIMIZED,
 } from '../common/window-state-manager'
-import { computed, ref, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { ACTIVE_APP } from '../store/state.type'
 
 const props = defineProps({
   config: Object,
 })
-const windowStyle = {
+const {
+  windowStatus,
+  oldWindowStatus,
+  minimizeWindow,
+  maximizeWindow,
+  unMaximizeWindow,
+  updateZIndex,
+} = useWindowStateManager()
+const windowStyle = reactive({
   backgroundColor: props.config.bgColor,
-}
-const windowStatusClass = ref('')
+  zIndex: updateZIndex(),
+})
 
+const windowStatusClass = ref('')
 const store = useStore()
-const {windowStatus, oldWindowStatus, minimizeWindow, maximizeWindow, unMaximizeWindow} = useWindowStateManager()
 const activeApp = computed(() => store.state.apps[ACTIVE_APP])
 
 // 关闭应用
@@ -77,6 +85,7 @@ watch(windowStatus, value => {
 watch(activeApp, val => {
   if (props.config.name === val) {
     windowStatus.value = oldWindowStatus.value
+    windowStyle.zIndex = updateZIndex()
   }
 })
 </script>

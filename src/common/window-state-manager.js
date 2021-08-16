@@ -6,9 +6,9 @@ export const WINDOW_NORMAL = 0x1
 export const WINDOW_MINIMIZED = 0x1 << 1
 export const WINDOW_MAXIMIZED = 0x1 << 2
 
+let windowZIndex = 10000
 
 export function useWindowStateManager() {
-    let windowZIndex = 10000
     const windowStatus = ref(WINDOW_NORMAL)
     const oldWindowStatus = ref(WINDOW_NORMAL)
     const store = useStore()
