@@ -1,5 +1,5 @@
 <template>
-  <div class="window" :style="windowStyle" :class="[windowStatusClass]">
+  <div class="window" :style="windowStyle" :class="[windowStatusClass]" @click.stop="onWindowClicked">
     <div class="title-bar" :class="{'title-bar-transparent': config.transparentTitleBar}">
       <img class="icon" :src="'/icons/uos/' + config.icon" alt="" />
       <div class="title">
@@ -32,7 +32,7 @@
 
 <script setup>
 import { useStore } from 'vuex'
-import { UNMOUNT_APP } from '../store/mutation.type'
+import { MOUNT_APP, UNMOUNT_APP } from '../store/mutation.type'
 import {
   useWindowStateManager,
   WINDOW_NORMAL,
@@ -88,6 +88,11 @@ watch(activeApp, val => {
     windowStyle.zIndex = updateZIndex()
   }
 })
+
+const onWindowClicked = () => {
+  windowStyle.zIndex = updateZIndex()
+  store.commit(MOUNT_APP, props.config.name)
+}
 </script>
 
 <style scoped lang="scss">
