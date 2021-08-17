@@ -29,7 +29,7 @@ const getAppConfig = (app) => {
   right: 0;
   left: 0;
   bottom: 0;
-  background: url("https://images.unsplash.com/photo-1512273222628-4daea6e55abb") center no-repeat;
+  background: url("https://images.unsplash.com/photo-1512273222628-4daea6e55abb?w=1920&q=90&auto=format") center no-repeat;
   background-size: cover;
   z-index: -1;
 }
