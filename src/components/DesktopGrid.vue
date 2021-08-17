@@ -3,6 +3,7 @@
     <div v-for="app in appAtDesktop"
          :key="app.name"
          class="desktop-entry"
+         @click="onEntryClicked(app.name)"
          @dblclick="launchApp(app.name)"
     >
       <img class="icon" :src="'/icons/uos/' + app.icon" alt="图标">
@@ -16,7 +17,7 @@
 <script setup>
 import { useStore } from 'vuex'
 import { MOUNT_APP } from '../store/mutation.type'
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 import { APP_AT_DESKTOP } from '../store/getter.type'
 
 const store = useStore()
@@ -24,6 +25,16 @@ const launchApp = (appName) => {
   store.commit(MOUNT_APP, appName)
 }
 const appAtDesktop = computed(() => store.getters[APP_AT_DESKTOP])
+
+const deviceInfo = inject('deviceInfo')
+const isMobile = deviceInfo.platform.type === 'mobile'
+
+const onEntryClicked = (appName) => {
+  if (isMobile) {
+    launchApp(appName)
+  }
+}
+
 </script>
 
 <style scoped lang="scss">
