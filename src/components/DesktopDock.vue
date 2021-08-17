@@ -76,6 +76,7 @@ const appAtDockTray = computed(() => store.getters[APP_AT_DOCK_TRAY])
   justify-content: center;
   align-items: center;
   animation: dock-in .8s ease-out;
+  z-index: 999999;
 
   &:before {
     content: '';

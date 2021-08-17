@@ -1,11 +1,12 @@
 <template>
-  <div class="window" :style="windowStyle" :class="[windowStatusClass]" @click.stop="onWindowClicked">
+  <div class="window" :style="windowStyle" :class="[windowStatusClass,windowDraggedClass]"
+       @click.stop="onWindowClicked">
     <div class="title-bar" :class="{'title-bar-transparent': config.transparentTitleBar}">
       <img class="icon" :src="'/icons/uos/' + config.icon" alt="" />
       <div class="title">
         <span>{{ config.title }}</span>
       </div>
-      <div class="space"></div>
+      <div class="drag-area" @mousedown="onMouseDown" @mouseup="onMouseUp" @dragstart="onDragStart" />
       <div class="switch">
         <div v-if="config.enableMenu" class="menu">
           <i class="iconfont icon-menu"></i>
@@ -56,6 +57,8 @@ const {
 const windowStyle = reactive({
   backgroundColor: props.config.bgColor,
   zIndex: updateZIndex(),
+  top: undefined,
+  left: undefined,
 })
 
 const windowStatusClass = ref('')
@@ -93,6 +96,55 @@ const onWindowClicked = () => {
   windowStyle.zIndex = updateZIndex()
   store.commit(MOUNT_APP, props.config.name)
 }
+
+//////////////////////////////// Drag Begin //////////////////////////
+let shiftX, shiftY, windowWidth, windowHeight
+const clientWidth = document.body.clientWidth
+const clientHeight = document.body.clientHeight
+const windowDraggedClass = ref('')
+
+const onMouseMove = (event) => {
+  const left = event.pageX - shiftX
+  const top = event.pageY - shiftY
+  // 防止超出屏幕区域
+  if (left < 0 || top < 0) {
+    return
+  }
+  if (left + windowWidth > clientWidth || top + windowHeight > clientHeight) {
+    return
+  }
+  windowStyle.left = `${left}px`
+  windowStyle.top = `${top}px`
+}
+
+const onDragStart = () => {
+  return false
+}
+
+const onMouseDown = (event) => {
+  windowStyle.zIndex = updateZIndex()
+  windowDraggedClass.value = 'window-dragged'
+  // 当前窗口的根节点
+  const windowElement = event.target.parentElement.parentElement
+  const computedStyle = window.getComputedStyle(windowElement)
+  // *1 将字符串转化为数字
+  const left = computedStyle.left.slice(0, -2) * 1
+  const top = computedStyle.top.slice(0, -2) * 1
+  windowHeight = computedStyle.height.slice(0, -2) * 1
+  windowWidth = computedStyle.width.slice(0, -2) * 1
+
+  console.log(left, top, windowHeight, windowWidth)
+  shiftX = event.clientX - left
+  shiftY = event.clientY - top
+
+  window.addEventListener('mousemove', onMouseMove)
+}
+
+const onMouseUp = () => {
+  windowDraggedClass.value = ''
+  window.removeEventListener('mousemove', onMouseMove)
+}
+//////////////////////////////// Drag End //////////////////////////
 </script>
 
 <style scoped lang="scss">
@@ -205,8 +257,10 @@ const onWindowClicked = () => {
     white-space: nowrap;
   }
 
-  .space {
+  .drag-area {
     flex: 1;
+    cursor: move;
+    height: 100%;
   }
 
   .switch {
