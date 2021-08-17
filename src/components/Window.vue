@@ -1,12 +1,13 @@
 <template>
   <div class="window" :style="windowStyle" :class="[windowStatusClass,windowDraggedClass]"
-       @click.stop="onWindowClicked">
+       @click.stop="onWindowClicked"
+  >
     <div class="title-bar" :class="{'title-bar-transparent': config.transparentTitleBar}">
       <img class="icon" :src="'/icons/uos/' + config.icon" alt="" />
       <div class="title">
         <span>{{ config.title }}</span>
       </div>
-      <div class="drag-area" @mousedown="onMouseDown" @mouseup="onMouseUp" @dragstart="onDragStart" />
+      <div class="drag-area" @mousedown="onMouseDown" @mouseup="onMouseUp" />
       <div class="switch">
         <div v-if="config.enableMenu" class="menu">
           <i class="iconfont icon-menu"></i>
@@ -98,9 +99,8 @@ const onWindowClicked = () => {
 }
 
 //////////////////////////////// Drag Begin //////////////////////////
-let shiftX, shiftY, windowWidth, windowHeight
-const clientWidth = document.body.clientWidth
-const clientHeight = document.body.clientHeight
+let shiftX, shiftY, windowWidth, windowHeight, clientWidth, clientHeight
+
 const windowDraggedClass = ref('')
 
 const onMouseMove = (event) => {
@@ -117,10 +117,6 @@ const onMouseMove = (event) => {
   windowStyle.top = `${top}px`
 }
 
-const onDragStart = () => {
-  return false
-}
-
 const onMouseDown = (event) => {
   windowStyle.zIndex = updateZIndex()
   windowDraggedClass.value = 'window-dragged'
@@ -132,8 +128,9 @@ const onMouseDown = (event) => {
   const top = computedStyle.top.slice(0, -2) * 1
   windowHeight = computedStyle.height.slice(0, -2) * 1
   windowWidth = computedStyle.width.slice(0, -2) * 1
+  clientWidth = document.body.clientWidth
+  clientHeight = document.body.clientHeight
 
-  console.log(left, top, windowHeight, windowWidth)
   shiftX = event.clientX - left
   shiftY = event.clientY - top
 
@@ -231,6 +228,7 @@ const onMouseUp = () => {
   justify-content: flex-start;
   flex-direction: row;
   align-items: center;
+  text-shadow: 0 0 1px black;
 
   &-transparent {
     background: transparent !important;
