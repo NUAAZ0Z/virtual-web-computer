@@ -1,13 +1,13 @@
 <template>
   <div class="desktop-dock">
-    <div class="left">
+    <div v-if="!isMobile" class="left">
       <DockEntryArea :apps="appAtDockLauncher" />
       <div class="dock-divider" />
     </div>
     <div class="center">
       <DockEntryArea :apps="appAtDockCenter" />
     </div>
-    <div class="right">
+    <div v-if="!isMobile" class="right">
       <div class="dock-divider" />
       <div class="dock-time dock-entry">
         <span>
@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, inject, onMounted, onUnmounted, ref } from 'vue'
 import { APP_AT_DOCK_CENTER, APP_AT_DOCK_LAUNCHER, APP_AT_DOCK_TRAY } from '../store/getter.type'
 import { useStore } from 'vuex'
 import DockEntryArea from './DockEntryArea.vue'
@@ -48,6 +48,12 @@ const store = useStore()
 const appAtDockLauncher = computed(() => store.getters[APP_AT_DOCK_LAUNCHER])
 const appAtDockCenter = computed(() => store.getters[APP_AT_DOCK_CENTER])
 const appAtDockTray = computed(() => store.getters[APP_AT_DOCK_TRAY])
+
+const deviceInfo = inject('deviceInfo')
+const isMobile = deviceInfo.platform.type === 'mobile'
+
+// Dock在手机端被窗口覆盖，其他类型设备上Dock常显，Dock的z-index高于Window
+const dockZIndex = isMobile ? 999 : 999999
 </script>
 
 <style scoped lang="scss">
@@ -76,7 +82,7 @@ const appAtDockTray = computed(() => store.getters[APP_AT_DOCK_TRAY])
   justify-content: center;
   align-items: center;
   animation: dock-in .8s ease-out;
-  z-index: 999999;
+  z-index: v-bind(dockZIndex);
 
   &:before {
     content: '';

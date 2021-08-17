@@ -12,13 +12,15 @@
         <div v-if="config.enableMenu" class="menu">
           <i class="iconfont icon-menu"></i>
         </div>
-        <div v-if="!config.disableMinimize" class="minimize" @click.stop="minimizeWindow">
+        <div v-if="!config.disableMinimize && notMobile" class="minimize" @click.stop="minimizeWindow">
           <i class="iconfont icon-minimize"></i>
         </div>
-        <div v-if="windowStatus===WINDOW_NORMAL && config.enableMaximize" class="maximize" @click.stop="maximizeWindow">
+        <div v-if="windowStatus===WINDOW_NORMAL && config.enableMaximize && notMobile" class="maximize"
+             @click.stop="maximizeWindow"
+        >
           <i class="iconfont icon-maximize"></i>
         </div>
-        <div v-if="windowStatus===WINDOW_MAXIMIZED && config.enableMaximize" class="un-maximize"
+        <div v-if="windowStatus===WINDOW_MAXIMIZED && config.enableMaximize && notMobile" class="un-maximize"
              @click.stop="unMaximizeWindow"
         >
           <i class="iconfont icon-unmaximize"></i>
@@ -41,7 +43,7 @@ import {
   WINDOW_MINIMIZED,
   WINDOW_MAXIMIZED,
 } from '../common/window-state-manager'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, inject, reactive, ref, watch } from 'vue'
 import { ACTIVE_APP } from '../store/state.type'
 
 const props = defineProps({
@@ -62,13 +64,18 @@ const windowStyle = reactive({
   left: undefined,
 })
 
-const windowStatusClass = ref('')
+const deviceInfo = inject('deviceInfo')
+const isMobile = deviceInfo.platform.type === 'mobile'
+const notMobile = !isMobile
+
+// 窗口状态类绑定，手机端默认窗口最大化
+const windowStatusClass = ref(!!isMobile ? 'window-maximized-mobile' : '')
 const store = useStore()
 const activeApp = computed(() => store.state.apps[ACTIVE_APP])
 
 // 关闭应用
 const killApp = (appName) => {
-  windowStatusClass.value = 'window-status-closed'
+  windowStatusClass.value = 'window-closed'
   // 在窗口关闭动画结束后再卸载
   setTimeout(() => {
     store.commit(UNMOUNT_APP, appName)
@@ -78,9 +85,9 @@ const killApp = (appName) => {
 // 监视窗口状态，更换样式类
 watch(windowStatus, value => {
   if (value === WINDOW_MAXIMIZED) {
-    windowStatusClass.value = 'window-status-maximized'
+    windowStatusClass.value = 'window-maximized'
   } else if (value === WINDOW_MINIMIZED) {
-    windowStatusClass.value = 'window-status-minimized'
+    windowStatusClass.value = 'window-minimized'
   } else {
     windowStatusClass.value = ''
   }
@@ -186,7 +193,7 @@ const onMouseUp = () => {
   background-color: $window-background-color;
   width: $window-default-width;
   height: $window-default-height;
-  max-height: calc(100% - #{$dock-height + $dock-margin * 2});
+  //max-height: calc(100% - #{$dock-height + $dock-margin * 2});
   border-radius: $window-border-radius;
   box-shadow: $window-shadow;
   animation: window-in .2s ease-out;
@@ -201,20 +208,27 @@ const onMouseUp = () => {
   }
 }
 
-.window-status-closed {
+.window-closed {
   animation: window-close .2s ease-in forwards;
 }
 
-.window-status-minimized {
+.window-minimized {
   animation: window-close .2s ease-in forwards;
   margin: unset;
 }
 
-.window-status-maximized {
+.window-maximized {
   left: $window-maximized-margin !important;
   top: $window-maximized-margin !important;
   width: calc(100% - #{$window-maximized-margin * 2}) !important;
   height: calc(100% - #{$dock-height + $dock-margin * 2 + $window-maximized-margin * 2}) !important;
+
+  &-mobile {
+    left: $window-maximized-margin !important;
+    top: $window-maximized-margin !important;
+    width: calc(100% - #{$window-maximized-margin * 2}) !important;
+    height: calc(100% - #{$window-maximized-margin * 2}) !important;
+  }
 }
 
 .window .title-bar {
