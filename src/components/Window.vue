@@ -75,7 +75,8 @@ const activeApp = computed(() => store.state.apps[ACTIVE_APP])
 
 // 关闭应用
 const killApp = (appName) => {
-  windowStatusClass.value = 'window-closed'
+  // 关闭时需要在当前窗口状态追加样式类，否则会造成抖动，比如最大化时关闭，窗口会恢复默认大小造成画面抖动
+  windowStatusClass.value = `${windowStatusClass.value} window-closed`
   // 在窗口关闭动画结束后再卸载
   setTimeout(() => {
     store.commit(UNMOUNT_APP, appName)
@@ -176,7 +177,7 @@ const onMouseUp = () => {
 @keyframes window-minimize {
   0% {
     opacity: 1;
-    transform: scale(0);
+    transform: scale(1);
   }
   100% {
     opacity: 0;
