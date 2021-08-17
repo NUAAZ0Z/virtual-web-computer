@@ -21,6 +21,7 @@
     "eslint-plugin-vue": "^7.16.0",
     "husky": "^7.0.1",
     "sass": "^1.37.5",
-    "vite": "^2.4.4"
+    "vite": "^2.4.4",
+    "vite-plugin-compression": "^0.3.3"
   }
 }
