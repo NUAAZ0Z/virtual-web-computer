@@ -6,6 +6,6 @@ export default {
     icon: 'explorer.svg',
     component: Explorer,
     dockLocation: 'center',
-    enableMenu: true,
-    enableMaximize: true,
+    enableMenu: false,
+    enableMaximize: false,
 }

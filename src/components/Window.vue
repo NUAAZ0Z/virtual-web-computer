@@ -158,9 +158,11 @@ const onMouseUp = () => {
 
 @keyframes window-in {
   0% {
-    transform: scale(0.2);
+    opacity: 0;
+    transform: scale(0.6);
   }
   100% {
+    opacity: 1;
     transform: scale(1);
   }
 }
@@ -168,9 +170,11 @@ const onMouseUp = () => {
 @keyframes window-close {
   0% {
     transform: scale(1);
+    opacity: 1;
   }
   100% {
     transform: scale(0);
+    opacity: 0;
   }
 }
 
@@ -197,8 +201,8 @@ const onMouseUp = () => {
   //max-height: calc(100% - #{$dock-height + $dock-margin * 2});
   border-radius: $window-border-radius;
   box-shadow: $window-shadow;
-  animation: window-in .2s ease-out;
-  transition: all .1s ease-out;
+  animation: window-in .3s cubic-bezier(0,1,0,1);
+  transition: all .5s cubic-bezier(0,1,0,1);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
