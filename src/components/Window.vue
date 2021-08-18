@@ -7,7 +7,8 @@
       <div class="title">
         <span>{{ config.title }}</span>
       </div>
-      <div class="drag-area" @mousedown="onMouseDown" @mouseup="onMouseUp" />
+      <div class="drag-area" @mousedown="onMouseOrTouchDown" @mouseup="onMouseOrTouchUp"
+           @touchstart="onMouseOrTouchDown" @touchend="onMouseOrTouchUp" />
       <div class="switch">
         <div v-if="config.enableMenu" class="menu">
           <i class="iconfont icon-menu"></i>
@@ -67,6 +68,7 @@ const windowStyle = reactive({
 const deviceInfo = inject('deviceInfo')
 const isMobile = deviceInfo.platform.type === 'mobile'
 const notMobile = !isMobile
+const isDesktop = deviceInfo.platform.type === 'desktop'
 
 // 窗口状态类绑定，手机端默认窗口最大化
 const windowStatusClass = ref(!!isMobile ? 'window-maximized-mobile' : '')
@@ -112,8 +114,16 @@ let shiftX, shiftY, windowWidth, windowHeight, clientWidth, clientHeight
 const windowDraggedClass = ref('')
 
 const onMouseMove = (event) => {
-  const left = event.pageX - shiftX
-  const top = event.pageY - shiftY
+  let left, top
+  if (event.touches) {
+    // 触摸拖动
+    left = event.touches[0].pageX - shiftX
+    top = event.touches[0].pageY - shiftY
+  } else {
+    // 鼠标拖动
+    left = event.pageX - shiftX
+    top = event.pageY - shiftY
+  }
   // 防止超出屏幕区域
   if (left < 0 || top < 0) {
     return
@@ -125,7 +135,9 @@ const onMouseMove = (event) => {
   windowStyle.top = `${top}px`
 }
 
-const onMouseDown = (event) => {
+const onMouseOrTouchDown = (event) => {
+  event.preventDefault()
+
   windowStyle.zIndex = updateZIndex()
   windowDraggedClass.value = 'window-dragged'
   // 当前窗口的根节点
@@ -139,15 +151,30 @@ const onMouseDown = (event) => {
   clientWidth = document.body.clientWidth
   clientHeight = document.body.clientHeight
 
-  shiftX = event.clientX - left
-  shiftY = event.clientY - top
+  if (event.touches) {
+    // 触摸拖动
+    shiftX = event.touches[0].clientX - left
+    shiftY = event.touches[0].clientY - top
+  } else {
+    // 鼠标拖动
+    shiftX = event.clientX - left
+    shiftY = event.clientY - top
+  }
 
-  window.addEventListener('mousemove', onMouseMove)
+  if (isDesktop) {
+    window.addEventListener('mousemove', onMouseMove)
+  } else {
+    window.addEventListener('touchmove', onMouseMove, {passive: true})
+  }
 }
 
-const onMouseUp = () => {
+const onMouseOrTouchUp = () => {
   windowDraggedClass.value = ''
-  window.removeEventListener('mousemove', onMouseMove)
+  if (isDesktop) {
+    window.removeEventListener('mousemove', onMouseMove)
+  } else {
+    window.removeEventListener('touchmove', onMouseMove, false)
+  }
 }
 //////////////////////////////// Drag End //////////////////////////
 </script>
@@ -201,8 +228,8 @@ const onMouseUp = () => {
   //max-height: calc(100% - #{$dock-height + $dock-margin * 2});
   border-radius: $window-border-radius;
   box-shadow: $window-shadow;
-  animation: window-in .3s cubic-bezier(0,1,0,1);
-  transition: all .5s cubic-bezier(0,1,0,1);
+  animation: window-in .3s cubic-bezier(0, 1, 0, 1);
+  transition: all .5s cubic-bezier(0, 1, 0, 1);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

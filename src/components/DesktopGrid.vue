@@ -27,10 +27,10 @@ const launchApp = (appName) => {
 const appAtDesktop = computed(() => store.getters[APP_AT_DESKTOP])
 
 const deviceInfo = inject('deviceInfo')
-const isMobile = deviceInfo.platform.type === 'mobile'
 
+const notDesktop = deviceInfo.platform.type === 'desktop'
 const onEntryClicked = (appName) => {
-  if (isMobile) {
+  if (!notDesktop) {
     launchApp(appName)
   }
 }
