@@ -58,7 +58,7 @@ const dockZIndex = isMobile ? 999 : 999999
 
 <style scoped lang="scss">
 @use "sass:math";
-@import "../assets/var";
+@import "../assets/style/var";
 
 @keyframes dock-in {
   0% {

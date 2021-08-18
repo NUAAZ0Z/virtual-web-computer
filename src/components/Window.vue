@@ -8,7 +8,8 @@
         <span>{{ config.title }}</span>
       </div>
       <div class="drag-area" @mousedown="onMouseOrTouchDown" @mouseup="onMouseOrTouchUp"
-           @touchstart="onMouseOrTouchDown" @touchend="onMouseOrTouchUp" />
+           @touchstart="onMouseOrTouchDown" @touchend="onMouseOrTouchUp"
+      />
       <div class="switch">
         <div v-if="config.enableMenu" class="menu">
           <i class="iconfont icon-menu"></i>
@@ -181,7 +182,7 @@ const onMouseOrTouchUp = () => {
 
 <style scoped lang="scss">
 @use "sass:math";
-@import "../assets/var";
+@import "../assets/style/var";
 
 @keyframes window-in {
   0% {

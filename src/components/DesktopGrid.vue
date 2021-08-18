@@ -39,7 +39,7 @@ const onEntryClicked = (appName) => {
 
 <style scoped lang="scss">
 @use "sass:math";
-@import "../assets/var";
+@import "../assets/style/var";
 
 $factor: 0.8;
 $desktop-entry-width: 72px;

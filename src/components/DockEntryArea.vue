@@ -24,7 +24,7 @@ const launchApp = (appName) => {
 </script>
 
 <style lang="scss">
-@import "../assets/var";
+@import "../assets/style/var";
 .dock-entry {
   position: relative;
   width: 48px;
