@@ -6,7 +6,7 @@
     <div class="desktop-bg" />
     <transition name="fade">
       <div v-if="!bgLoaded" class="loading">
-        <img src="../assets/image/loading.png" alt="加载中">
+        <img src="/images/loading.png" alt="加载中">
       </div>
     </transition>
   </div>
