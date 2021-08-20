@@ -257,10 +257,16 @@ const onMouseOrTouchUp = () => {
   height: calc(100% - #{$dock-height + $dock-margin * 2 + $window-maximized-margin * 2}) !important;
 
   &-mobile {
-    left: $window-maximized-margin !important;
-    top: $window-maximized-margin !important;
-    width: calc(100% - #{$window-maximized-margin * 2}) !important;
-    height: calc(100% - #{$window-maximized-margin * 2}) !important;
+    border-radius: 0;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+
+    .title-bar {
+      border-top-right-radius: 0 !important;
+      border-top-left-radius: 0 !important;
+    }
   }
 }
 
