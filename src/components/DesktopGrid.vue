@@ -6,7 +6,7 @@
          @click="onEntryClicked(app.name)"
          @dblclick="launchApp(app.name)"
     >
-      <img class="icon" :src="'/icons/uos/' + app.icon" alt="图标">
+      <img class="icon" :src="'/icons/apps/' + app.icon" alt="图标">
       <div class="label">
         {{ app.title }}
       </div>
@@ -82,7 +82,7 @@ $desktop-entry-height: 108px;
       width: 48px;
       background-repeat: no-repeat;
       background-size: cover;
-      object-fit: cover;
+      object-fit: contain;
     }
 
     .label {

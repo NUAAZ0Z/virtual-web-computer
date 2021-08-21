@@ -1,4 +1,4 @@
-import Explorer from './components/Explorer.vue'
+import Explorer from './components/GithubRepo.vue'
 
 export default {
     name: 'trash-bin',

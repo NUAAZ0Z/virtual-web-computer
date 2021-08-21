@@ -2,7 +2,7 @@
   <div v-for="entry in apps" :key="entry.name"
        class="dock-entry" @click.stop="launchApp(entry.name)"
   >
-    <img :src="'/icons/uos/' + entry.icon" alt="图标">
+    <img :src="'/icons/apps/' + entry.icon" alt="图标">
     <div class="dock-tooltip">
       {{ entry.title }}
     </div>

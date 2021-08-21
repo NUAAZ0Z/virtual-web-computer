@@ -3,14 +3,16 @@
   "version": "0.0.1",
   "license": "",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint --ext .js,.vue ./src --fix --fix-type problem,suggestion",
     "prepare": "husky install"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "bowser": "^2.11.0",
+    "file-saver": "^2.0.5",
     "vue": "^3.2.2",
     "vue-router": "^4.0.11",
     "vuex": "^4.0.2"

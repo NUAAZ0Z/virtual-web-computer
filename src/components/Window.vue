@@ -3,7 +3,7 @@
        @click.stop="onWindowClicked"
   >
     <div class="title-bar" :class="{'title-bar-transparent': config.transparentTitleBar}">
-      <img class="icon" :src="'/icons/uos/' + config.icon" alt="" />
+      <img class="icon" :src="'/icons/apps/' + config.icon" alt="" />
       <div class="title">
         <span>{{ config.title }}</span>
       </div>
@@ -32,7 +32,9 @@
         </div>
       </div>
     </div>
-    <div class="content"></div>
+    <div class="content">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -340,5 +342,10 @@ const onMouseOrTouchUp = () => {
       font-weight: bold;
     }
   }
+}
+
+.content {
+  flex: 1;
+  overflow: hidden;
 }
 </style>
