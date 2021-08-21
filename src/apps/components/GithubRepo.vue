@@ -20,9 +20,6 @@
     </div>
     <div class="main-container">
       <transition name="fade">
-        <div v-show="showRepoModal || showSearchModal" class="grey-mask" @click="onMaskClicked"></div>
-      </transition>
-      <transition name="fade">
         <Loading v-if="loading" />
         <ul v-else class="files">
           <li v-for="file in files" :key="file.name" class="file-item" @click="onFileItemClicked(file)">
@@ -41,6 +38,9 @@
         </ul>
       </transition>
     </div>
+    <transition name="fade">
+      <div v-show="showRepoModal || showSearchModal" class="grey-mask" @click="onMaskClicked"></div>
+    </transition>
     <div class="repo-modal" :class="{'repo-modal-activated': showRepoModal}">
       <div class="modal-title">
         切换仓库
@@ -222,7 +222,7 @@ $header-height: 42px;
 
   .main-container {
     height: calc(100% - #{$header-height});
-    overflow: auto;
+    overflow: scroll;
     padding: 0 $spacing;
     position: relative;
 
@@ -252,6 +252,7 @@ $header-height: 42px;
 
   .grey-mask {
     @include absolute-full();
+    top: $header-height;
     background-color: rgba(black, .2);
   }
 
