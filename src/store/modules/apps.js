@@ -14,7 +14,7 @@ const apps = Object.values(Applications)
 
 const state = {
     [ACTIVE_APP]: null,
-    [APP_MOUNTED_NAMES]: [],
+    [APP_MOUNTED_NAMES]: ['github-repo'],
 }
 
 const getters = {

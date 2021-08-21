@@ -2,7 +2,7 @@
   <div class="window" :style="windowStyle" :class="[windowStatusClass,windowDraggedClass]"
        @click.stop="onWindowClicked"
   >
-    <div class="title-bar" :class="{'title-bar-transparent': config.transparentTitleBar}">
+    <div class="window-title-bar" :class="{'window-title-bar-transparent': config.transparentTitleBar}">
       <img class="icon" :src="'/icons/apps/' + config.icon" alt="" />
       <div class="title">
         <span>{{ config.title }}</span>
@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-    <div class="content">
+    <div class="window-body">
       <slot></slot>
     </div>
   </div>
@@ -265,14 +265,14 @@ const onMouseOrTouchUp = () => {
     width: 100% !important;
     height: 100% !important;
 
-    .title-bar {
+    .window-title-bar {
       border-top-right-radius: 0 !important;
       border-top-left-radius: 0 !important;
     }
   }
 }
 
-.window .title-bar {
+.window .window-title-bar {
   user-select: none;
   height: $window-title-height;
   width: 100%;
@@ -344,7 +344,7 @@ const onMouseOrTouchUp = () => {
   }
 }
 
-.content {
+.window-body {
   flex: 1;
   overflow: hidden;
 }

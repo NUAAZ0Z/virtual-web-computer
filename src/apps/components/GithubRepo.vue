@@ -1,46 +1,62 @@
 <template>
-  <Window class="repo" :config="config">
-    <div class="window-content-container">
-      <div class="header">
-        <div class="left-option">
-          <div v-show="showBackButton" class="icon-button" @click="backToParent">
-            <i class="iconfont icon-arrow-left"></i>
-          </div>
-          <div class="icon-button">
-            <i class="iconfont icon-apps"></i>
-          </div>
-        </div>
-        <div class="repo-name">
-          {{ owner + '/' + repo }}
-        </div>
-        <div class="right-option">
-          <div class="icon-button">
-            <i class="iconfont icon-search"></i>
-          </div>
-        </div>
+  <Window class="github-repo" :config="config">
+    <div class="header">
+      <ul class="left-options">
+        <li v-show="showBackButton" class="icon-button" @click="backToParent">
+          <i class="iconfont icon-arrow-left"></i>
+        </li>
+        <li class="icon-button" @click="showRepoModal=true">
+          <i class="iconfont icon-apps"></i>
+        </li>
+      </ul>
+      <div class="repo-name">
+        {{ owner + '/' + repo }}
       </div>
-      <div class="repo-main">
-        <transition name="fade">
-          <Loading v-if="loading" />
-          <div v-else class="files">
-            <Loading v-if="loading" />
-            <div v-for="file in files" :key="file.name" class="file-item" @click="onFileItemClicked(file)">
-              <div class="file-icon icon-button">
-                <i v-if="file.type==='dir'" class="iconfont icon-folder" />
-                <i v-else class="iconfont icon-file" />
-              </div>
-              <div class="file-info">
-                {{ file.name }}
-              </div>
-              <div class="file-operation icon-button">
-                <i v-if="file.type==='dir'" class="iconfont icon-arrow-right" />
-                <i v-else class="iconfont icon-arrow-down" @click="downloadFile(file)" />
-              </div>
-            </div>
-          </div>
-        </transition>
-      </div>
+      <ul class="right-options">
+        <li class="icon-button">
+          <i class="iconfont icon-search"></i>
+        </li>
+      </ul>
     </div>
+    <div class="main-container">
+      <transition name="fade">
+        <div v-show="showRepoModal || showSearchModal" class="grey-mask" @click="onMaskClicked"></div>
+      </transition>
+      <transition name="fade">
+        <Loading v-if="loading" />
+        <ul v-else class="files">
+          <li v-for="file in files" :key="file.name" class="file-item" @click="onFileItemClicked(file)">
+            <span class="file-icon icon-button">
+              <i v-if="file.type==='dir'" class="iconfont icon-folder" />
+              <i v-else class="iconfont icon-file" />
+            </span>
+            <span class="file-info">
+              {{ file.name }}
+            </span>
+            <span class="file-operation icon-button">
+              <i v-if="file.type==='dir'" class="iconfont icon-arrow-right" />
+              <i v-else class="iconfont icon-arrow-down" @click="downloadFile(file)" />
+            </span>
+          </li>
+        </ul>
+      </transition>
+    </div>
+    <div class="repo-modal" :class="{'repo-modal-activated': showRepoModal}">
+      <div class="modal-title">
+        切换仓库
+      </div>
+      <ul>
+        <li v-for="r in props.config.repos" :key="r.owner+r.repo" class="repo-item" @click="onRepoChosen(r)">
+          <div class="repo-icon icon-button">
+            <i class="iconfont icon-github"></i>
+          </div>
+          <div class="repo-info">
+            {{ r.owner + '/' + r.repo }}
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="search-modal"></div>
   </Window>
 </template>
 
@@ -60,6 +76,8 @@ const repo = ref('')
 const path = ref('')
 const files = ref([])
 const loading = ref(true)
+const showRepoModal = ref(false)
+const showSearchModal = ref(false)
 
 const initParams = () => {
   owner.value = props.config.repos[0].owner
@@ -116,21 +134,40 @@ const onFileItemClicked = (file) => {
 const downloadFile = (file) => {
   FileSaver.saveAs(file.download_url, file.name)
 }
+
+const onMaskClicked = () => {
+  showRepoModal.value = false
+  showSearchModal.value = false
+}
+
+const onRepoChosen = (config) => {
+  owner.value = config.owner
+  repo.value = config.repo
+  path.value = ''
+  showRepoModal.value = false
+}
 </script>
 
 <style scoped lang="scss">
 @use "sass:math";
 @import "../../assets/style/var";
+@import "../../assets/style/mixin";
 
 $window-width: 378px;
 $window-height: 756px;
 
 $header-height: 42px;
-.repo {
+.github-repo {
   width: $window-width;
   height: $window-height;
   top: calc(50% - #{math.div($window-height, 2)});
   left: calc(50% - #{math.div($window-width, 2)});
+
+  ::v-deep(.window-body) {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
 
   .icon-button {
     $button-margin: 4px;
@@ -157,8 +194,8 @@ $header-height: 42px;
     position: relative;
     text-align: center;
 
-    .left-option,
-    .right-option {
+    .left-options,
+    .right-options {
       position: absolute;
       top: 0;
       bottom: 0;
@@ -168,26 +205,25 @@ $header-height: 42px;
       width: 100%;
       text-align: center;
       display: inline-block;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
+      @include single-line-ellipsis();
       padding: 0 $header-height*2;
     }
 
-    .left-option {
+    .left-options {
       left: 0;
     }
 
-    .right-option {
+    .right-options {
       right: 0;
     }
   }
 
-  .repo-main {
-    $distance: 4px;
+  $spacing: 8px;
+
+  .main-container {
     height: calc(100% - #{$header-height});
     overflow: auto;
-    padding: $distance $distance*2;
+    padding: 0 $spacing;
     position: relative;
 
     &::-webkit-scrollbar {
@@ -197,14 +233,11 @@ $header-height: 42px;
     .file-item {
       min-height: $header-height;
       width: 100%;
-      float: left;
-      margin: $distance 0;
-      border-radius: $distance;
+      margin: $spacing 0;
+      border-radius: $spacing;
       background-color: white;
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
+      @include gen-flex(row, center, center);
+      user-select: none;
 
       .file-info {
         flex: 1;
@@ -213,6 +246,49 @@ $header-height: 42px;
 
       .iconfont {
         font-size: 20px !important;
+      }
+    }
+  }
+
+  .grey-mask {
+    @include absolute-full();
+    background-color: rgba(black, .2);
+  }
+
+  .repo-modal {
+    @include gen-absolute(100%, 0, auto, 0);
+    background-color: white;
+    transition: all .2s ease-out;
+    max-height: 540px;
+    overflow: auto;
+    padding: $spacing 0;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    user-select: none;
+
+    &-activated {
+      transform: translateY(-100%);
+    }
+
+    .modal-title {
+      font-size: 13px;
+      padding: $spacing/2 $spacing*2;
+    }
+
+    .repo-item {
+      @include gen-flex(row, flex-start, center);
+
+      &:active {
+        background-color: rgba(black, .1);
+      }
+
+      .repo-icon {
+        text-align: center;
+
+        .iconfont {
+          font-size: 18px;
+          font-weight: bold;
+        }
       }
     }
   }
