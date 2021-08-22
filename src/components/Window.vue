@@ -183,7 +183,6 @@ const onMouseOrTouchUp = () => {
 </script>
 
 <style scoped lang="scss">
-@use "sass:math";
 @import "../assets/style/var";
 
 @keyframes window-in {
@@ -223,8 +222,8 @@ const onMouseOrTouchUp = () => {
 .window {
   position: absolute;
   opacity: 1;
-  top: calc(50% - #{math.div($window-default-height, 2)});
-  left: calc(50% - #{math.div($window-default-width, 2)});
+  top: calc(#{$desktop-grid-height}*0.5 - #{$window-default-height}*0.5);
+  left: calc(50% - #{$window-default-width}*0.5);
   background-color: $window-background-color;
   width: $window-default-width;
   height: $window-default-height;

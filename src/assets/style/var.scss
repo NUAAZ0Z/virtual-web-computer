@@ -9,6 +9,7 @@ $dock-tooltip-background-color: #CBCBCF;
 
 // Desktop
 $desktop-entry-gap: 12px;
+$desktop-grid-height: calc(100% - #{$dock-margin*2} - #{$dock-height});
 
 // Window
 $window-border-radius: 18px;

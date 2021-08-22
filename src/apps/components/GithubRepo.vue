@@ -112,7 +112,6 @@ const fetchContents = async () => {
 }
 
 watch([owner, repo, path], () => {
-      console.log(owner.value, repo.value)
       fetchContents()
     }, {flush: 'post'},
     // flush = 'post' 同一个方法里同时改变监听源，监听器只会执行一次
@@ -132,7 +131,9 @@ const onFileItemClicked = (file) => {
 }
 
 const downloadFile = (file) => {
-  FileSaver.saveAs(file.download_url, file.name)
+  // 镜像加速
+  const url = `https://ghproxy.com/${file.download_url}`
+  FileSaver.saveAs(url, file.name)
 }
 
 const onMaskClicked = () => {
@@ -149,19 +150,18 @@ const onRepoChosen = (config) => {
 </script>
 
 <style scoped lang="scss">
-@use "sass:math";
 @import "../../assets/style/var";
 @import "../../assets/style/mixin";
 
-$window-width: 378px;
-$window-height: 756px;
+$window-width: 360px;
+$window-height: 720px;
 
 $header-height: 42px;
 .github-repo {
   width: $window-width;
   height: $window-height;
-  top: calc(50% - #{math.div($window-height, 2)});
-  left: calc(50% - #{math.div($window-width, 2)});
+  top: calc(#{$desktop-grid-height} * 0.5 - #{$window-height} * 0.5);
+  left: calc(50% - #{$window-width} * 0.5);
 
   ::v-deep(.window-body) {
     width: 100%;
@@ -273,7 +273,7 @@ $header-height: 42px;
 
     .modal-title {
       font-size: 13px;
-      padding: $spacing/2 $spacing*2;
+      padding: $spacing*0.5 $spacing*2;
     }
 
     .repo-item {

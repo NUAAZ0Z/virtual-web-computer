@@ -38,7 +38,6 @@ const onEntryClicked = (appName) => {
 </script>
 
 <style scoped lang="scss">
-@use "sass:math";
 @import "../assets/style/var";
 
 $factor: 0.8;
@@ -53,7 +52,7 @@ $desktop-entry-height: 108px;
   grid-auto-flow: column;
   grid-column-gap: $desktop-entry-gap;
   width: 100%;
-  height: calc(100% - #{$dock-margin*2} - #{$dock-height});
+  height: $desktop-grid-height;
 
   .desktop-entry {
     user-select: none;

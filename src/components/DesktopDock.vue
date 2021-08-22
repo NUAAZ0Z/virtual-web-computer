@@ -57,7 +57,6 @@ const dockZIndex = isMobile ? 999 : 999999
 </script>
 
 <style scoped lang="scss">
-@use "sass:math";
 @import "../assets/style/var";
 
 @keyframes dock-in {
@@ -94,7 +93,7 @@ const dockZIndex = isMobile ? 999 : 999999
     backdrop-filter: blur(8px);
     background-color: rgba(#c2e9fb, .3);
     border-radius: $dock-border-radius;
-    margin: math.div(-$dock-margin, 3);
+    margin: -$dock-margin * 0.3333;
     z-index: -1;
   }
 
