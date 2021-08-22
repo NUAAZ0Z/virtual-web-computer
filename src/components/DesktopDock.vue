@@ -58,6 +58,7 @@ const dockZIndex = isMobile ? 999 : 999999
 
 <style scoped lang="scss">
 @import "../assets/style/var";
+@import "../assets/style/mixin";
 
 @keyframes dock-in {
   0% {
@@ -76,10 +77,6 @@ const dockZIndex = isMobile ? 999 : 999999
   left: 0;
   height: $dock-height;
   border-radius: $dock-border-radius;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
   animation: dock-in .8s ease-out;
   z-index: v-bind(dockZIndex);
 
@@ -103,24 +100,24 @@ const dockZIndex = isMobile ? 999 : 999999
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
   }
-
-  //.left,
-  //.right {
-  //  min-width: 144px;
-  //  max-width: 360px;
-  //}
 
   .left {
     justify-content: flex-start;
+    @include gen-absolute(0, auto, 0, 0);
   }
 
   .center {
-    flex: 1;
+    padding: 0;
+    @include tablet() {
+      padding: 0 160px;
+    }
   }
 
   .right {
     justify-content: flex-end;
+    @include gen-absolute(0, 0, 0, auto);
   }
 
   .dock-divider {

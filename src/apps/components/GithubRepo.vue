@@ -158,10 +158,10 @@ $window-height: 720px;
 
 $header-height: 42px;
 .github-repo {
-  width: $window-width;
-  height: $window-height;
-  top: calc(#{$desktop-grid-height} * 0.5 - #{$window-height} * 0.5);
-  left: calc(50% - #{$window-width} * 0.5);
+  //width: $window-width;
+  //height: $window-height;
+  //top: calc(#{$desktop-grid-height} * 0.5 - #{$window-height} * 0.5);
+  //left: calc(50% - #{$window-width} * 0.5);
 
   ::v-deep(.window-body) {
     width: 100%;
