@@ -13,7 +13,7 @@
         {{ owner + '/' + repo }}
       </div>
       <ul class="right-options">
-        <li class="icon-button">
+        <li class="icon-button" @click="showSearchModal=true">
           <i class="iconfont icon-search"></i>
         </li>
       </ul>
@@ -38,13 +38,7 @@
         </ul>
       </transition>
     </div>
-    <transition name="fade">
-      <div v-show="showRepoModal || showSearchModal" class="grey-mask" @click="onMaskClicked"></div>
-    </transition>
-    <div class="repo-modal" :class="{'repo-modal-activated': showRepoModal}">
-      <div class="modal-title">
-        切换仓库
-      </div>
+    <WindowModal v-model:show-modal="showRepoModal" title="切换仓库">
       <ul>
         <li v-for="r in props.config.repos" :key="r.owner+r.repo" class="repo-item" @click="onRepoChosen(r)">
           <div class="repo-icon icon-button">
@@ -55,14 +49,20 @@
           </div>
         </li>
       </ul>
-    </div>
-    <div class="search-modal"></div>
+    </WindowModal>
+    <WindowModal v-model:show-modal="showSearchModal" title="搜索文件">
+      搜索
+    </WindowModal>
+    <WindowModal v-model:show-modal="showFileDetailModal" title="文件详情">
+      文件详情
+    </WindowModal>
   </Window>
 </template>
 
 <script setup>
 import Window from '../../components/Window.vue'
 import Loading from '../../components/Loading.vue'
+import WindowModal from '../../components/WindowModal.vue'
 import { computed, onBeforeMount, onMounted, reactive, ref, watch } from 'vue'
 import { getContent } from '../../common/github-api'
 import FileSaver from 'file-saver'
@@ -78,6 +78,7 @@ const files = ref([])
 const loading = ref(true)
 const showRepoModal = ref(false)
 const showSearchModal = ref(false)
+const showFileDetailModal = ref(false)
 
 const initParams = () => {
   owner.value = props.config.repos[0].owner
@@ -127,6 +128,8 @@ const backToParent = () => {
 const onFileItemClicked = (file) => {
   if (file.type === 'dir') {
     path.value += `/${file.name}`
+  } else {
+    showFileDetailModal.value = true
   }
 }
 
@@ -134,11 +137,6 @@ const downloadFile = (file) => {
   // 镜像加速
   const url = `https://ghproxy.com/${file.download_url}`
   FileSaver.saveAs(url, file.name)
-}
-
-const onMaskClicked = () => {
-  showRepoModal.value = false
-  showSearchModal.value = false
 }
 
 const onRepoChosen = (config) => {
@@ -250,46 +248,19 @@ $header-height: 42px;
     }
   }
 
-  .grey-mask {
-    @include absolute-full();
-    top: $header-height;
-    background-color: rgba(black, .2);
-  }
+  .repo-item {
+    @include gen-flex(row, flex-start, center);
 
-  .repo-modal {
-    @include gen-absolute(100%, 0, auto, 0);
-    background-color: white;
-    transition: all .2s ease-out;
-    max-height: 540px;
-    overflow: auto;
-    padding: $spacing 0;
-    border-top-left-radius: 18px;
-    border-top-right-radius: 18px;
-    user-select: none;
-
-    &-activated {
-      transform: translateY(-100%);
+    &:active {
+      background-color: rgba(black, .1);
     }
 
-    .modal-title {
-      font-size: 13px;
-      padding: $spacing*0.5 $spacing*2;
-    }
+    .repo-icon {
+      text-align: center;
 
-    .repo-item {
-      @include gen-flex(row, flex-start, center);
-
-      &:active {
-        background-color: rgba(black, .1);
-      }
-
-      .repo-icon {
-        text-align: center;
-
-        .iconfont {
-          font-size: 18px;
-          font-weight: bold;
-        }
+      .iconfont {
+        font-size: 18px;
+        font-weight: bold;
       }
     }
   }
