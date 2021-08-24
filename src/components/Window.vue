@@ -14,15 +14,15 @@
         <div v-if="config.enableMenu" class="menu">
           <i class="iconfont icon-menu"></i>
         </div>
-        <div v-if="!config.disableMinimize && notMobile" class="minimize" @click.stop="minimizeWindow">
+        <div v-if="!config.disableMinimize" class="minimize" @click.stop="minimizeWindow">
           <i class="iconfont icon-minimize"></i>
         </div>
-        <div v-if="windowStatus===WINDOW_NORMAL && config.enableMaximize && notMobile" class="maximize"
+        <div v-if="windowStatus===WINDOW_NORMAL && config.enableMaximize" class="maximize"
              @click.stop="maximizeWindow"
         >
           <i class="iconfont icon-maximize"></i>
         </div>
-        <div v-if="windowStatus===WINDOW_MAXIMIZED && config.enableMaximize && notMobile" class="un-maximize"
+        <div v-if="windowStatus===WINDOW_MAXIMIZED && config.enableMaximize" class="un-maximize"
              @click.stop="unMaximizeWindow"
         >
           <i class="iconfont icon-unmaximize"></i>
@@ -69,12 +69,10 @@ const windowStyle = reactive({
 })
 
 const deviceInfo = inject('deviceInfo')
-const isMobile = deviceInfo.platform.type === 'mobile'
-const notMobile = !isMobile
 const isDesktop = deviceInfo.platform.type === 'desktop'
 
 // 窗口状态类绑定，手机端默认窗口最大化
-const windowStatusClass = ref(!!isMobile ? 'window-maximized-mobile' : '')
+const windowStatusClass = ref('')
 const store = useStore()
 const activeApp = computed(() => store.state.apps[ACTIVE_APP])
 
@@ -184,6 +182,7 @@ const onMouseOrTouchUp = () => {
 
 <style scoped lang="scss">
 @import "../assets/style/var";
+@import "../assets/style/mixin";
 
 @keyframes window-in {
   0% {
@@ -241,6 +240,19 @@ const onMouseOrTouchUp = () => {
   &-dragged {
     transition: none ! important;
   }
+
+  @include media('<tablet') {
+    border-radius: 0;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+
+    .window-title-bar {
+      border-top-right-radius: 0 !important;
+      border-top-left-radius: 0 !important;
+    }
+  }
 }
 
 .window-closed {
@@ -256,20 +268,8 @@ const onMouseOrTouchUp = () => {
   left: $window-maximized-margin !important;
   top: $window-maximized-margin !important;
   width: calc(100% - #{$window-maximized-margin * 2}) !important;
-  height: calc(100% - #{$dock-height + $dock-margin * 2 + $window-maximized-margin * 2}) !important;
-
-  &-mobile {
-    border-radius: 0;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-
-    .window-title-bar {
-      border-top-right-radius: 0 !important;
-      border-top-left-radius: 0 !important;
-    }
-  }
+  // 4px 是因为Dock的蒙层的margin为-4px，需要避开这区域
+  height: calc(100% - #{$dock-height + $dock-margin + $window-maximized-margin * 2 + 4px}) !important;
 }
 
 .window .window-title-bar {
@@ -340,6 +340,14 @@ const onMouseOrTouchUp = () => {
     > div:hover {
       background-color: #F8F8F8;
       font-weight: bold;
+    }
+
+    @include media('<tablet') {
+      .maximize,
+      .minimize,
+      .un-maximize {
+        display: none;
+      }
     }
   }
 }

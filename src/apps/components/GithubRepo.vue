@@ -154,7 +154,7 @@ const onRepoChosen = (config) => {
 $header-height: 42px;
 
 .github-repo {
-  @include media('<=tablet') {
+  @include media('<=desktop') {
     $size-var: 84vh;
     --window-width: #{$size-var * 0.5};
     --window-height: #{$size-var};

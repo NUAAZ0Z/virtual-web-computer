@@ -7,7 +7,7 @@ export default {
     component: GithubRepo,
     dockLocation: 'center',
     enableMenu: false,
-    enableMaximize: false,
+    enableMaximize: true,
     repos: [
         {
             owner: 'SUDOCS',

@@ -1,13 +1,13 @@
 <template>
   <div class="desktop-dock">
-    <div v-if="!isMobile" class="left">
+    <div class="left">
       <DockEntryArea :apps="appAtDockLauncher" />
       <div class="dock-divider" />
     </div>
     <div class="center">
       <DockEntryArea :apps="appAtDockCenter" />
     </div>
-    <div v-if="!isMobile" class="right">
+    <div class="right">
       <div class="dock-divider" />
       <div class="dock-time dock-entry">
         <span>
@@ -51,9 +51,6 @@ const appAtDockTray = computed(() => store.getters[APP_AT_DOCK_TRAY])
 
 const deviceInfo = inject('deviceInfo')
 const isMobile = deviceInfo.platform.type === 'mobile'
-
-// Dock在手机端被窗口覆盖，其他类型设备上Dock常显，Dock的z-index高于Window
-const dockZIndex = isMobile ? 999 : 999999
 </script>
 
 <style scoped lang="scss">
@@ -78,7 +75,12 @@ const dockZIndex = isMobile ? 999 : 999999
   height: $dock-height;
   border-radius: $dock-border-radius;
   animation: dock-in .8s ease-out;
-  z-index: v-bind(dockZIndex);
+  z-index: 999999;
+
+  @include media('<tablet') {
+    // Dock在手机端被窗口覆盖，其他类型设备上Dock常显，Dock的z-index高于Window
+    z-index: 999;
+  }
 
   &:before {
     content: '';
@@ -101,6 +103,13 @@ const dockZIndex = isMobile ? 999 : 999999
     justify-content: center;
     align-items: center;
     height: 100%;
+  }
+
+  @include media('<tablet') {
+    .left,
+    .right {
+      display: none;
+    }
   }
 
   .left {
