@@ -220,14 +220,14 @@ const onMouseOrTouchUp = () => {
 }
 
 .window {
+  --window-height: #{$window-default-height};
+  --window-width: #{$window-default-width};
   position: absolute;
-  opacity: 1;
-  top: calc(#{$desktop-grid-height}*0.5 - #{$window-default-height}*0.5);
-  left: calc(50% - #{$window-default-width}*0.5);
+  top: calc(#{$desktop-grid-height} * 0.5 - var(--window-height) * 0.5);
+  left: calc(50% - var(--window-width) * 0.5);
   background-color: $window-background-color;
-  width: $window-default-width;
-  height: $window-default-height;
-  //max-height: calc(100% - #{$dock-height + $dock-margin * 2});
+  width: var(--window-height);
+  height: var(--window-height);
   border-radius: $window-border-radius;
   box-shadow: $window-shadow;
   animation: window-in .3s cubic-bezier(0, 1, 0, 1);
@@ -235,6 +235,7 @@ const onMouseOrTouchUp = () => {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  opacity: 1;
   overflow: hidden;
   //消除transition，否则每次位置更新都需要动画过度渲染，导致拖拽不跟手
   &-dragged {

@@ -151,15 +151,18 @@ const onRepoChosen = (config) => {
 @import "../../assets/style/var";
 @import "../../assets/style/mixin";
 
-$window-height: 86vh;
-$window-width: $window-height*0.5;
-
 $header-height: 42px;
+
 .github-repo {
-  width: $window-width;
-  height: $window-height;
-  top: calc(#{$desktop-grid-height} * 0.5 - #{$window-height} * 0.5);
-  left: calc(50% - #{$window-width} * 0.5);
+  @include media('<=tablet') {
+    $size-var: 84vh;
+    --window-width: #{$size-var * 0.5};
+    --window-height: #{$size-var};
+  }
+  width: var(--window-width);
+  height: var(--window-height);
+  top: calc(#{$desktop-grid-height} * 0.5 - var(--window-height) * 0.5);
+  left: calc(50% - var(--window-width) * 0.5);
 
   ::v-deep(.window-body) {
     width: 100%;

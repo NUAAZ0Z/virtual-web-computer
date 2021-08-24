@@ -13,6 +13,7 @@
     "axios": "^0.21.1",
     "bowser": "^2.11.0",
     "file-saver": "^2.0.5",
+    "include-media": "^1.4.10",
     "vue": "^3.2.2",
     "vue-router": "^4.0.11",
     "vuex": "^4.0.2"

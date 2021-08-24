@@ -1,15 +1,4 @@
-@mixin tablet {
-  //@media (min-width: 768px) and (max-width: 1024px) {
-  @media (min-width: 768px) {
-    @content
-  }
-}
-
-@mixin desktop {
-  @media (min-width: 1024px) {
-    @content
-  }
-}
+@import "node_modules/include-media/dist/_include-media";
 
 @mixin gen-flex($direction, $justify-content, $align-items) {
   display: flex;

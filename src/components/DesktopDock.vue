@@ -110,7 +110,8 @@ const dockZIndex = isMobile ? 999 : 999999
 
   .center {
     padding: 0;
-    @include tablet() {
+
+    @include media('>=tablet') {
       padding: 0 160px;
     }
   }
