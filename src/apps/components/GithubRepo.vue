@@ -53,11 +53,6 @@
     <WindowModal v-model:show-modal="showSearchModal" title="搜索文件">
       搜索
     </WindowModal>
-    <WindowModal v-model:show-modal="showFileDetailModal" title="文件详情">
-      <div v-if="isImage(fileToShow.name)" class="image-preview">
-        <img :src="fileToShow.download_url" :alt="fileToShow.name">
-      </div>
-    </WindowModal>
   </Window>
 </template>
 
@@ -81,13 +76,6 @@ const files = ref([])
 const loading = ref(true)
 const showRepoModal = ref(false)
 const showSearchModal = ref(false)
-const showFileDetailModal = ref(false)
-let fileToShow = reactive({
-  name: '',
-  size: 0,
-  path: '',
-  download_url: '',
-})
 let images = []
 
 onBeforeMount(() => {
@@ -119,6 +107,7 @@ const fetchContents = async () => {
     })
     // 筛选出文件里面的图片
     let imageIndex = -1
+    images = []
     files.value = sortedResult.map(f => {
       if (isImage(f.name)) {
         images.push('https://ghproxy.com/' + f.download_url)
@@ -148,11 +137,6 @@ const onFileItemClicked = (file) => {
   if (file.type === 'dir') {
     path.value += `/${file.name}`
   } else {
-    showFileDetailModal.value = true
-    fileToShow.path = file.path
-    fileToShow.name = file.name
-    fileToShow.download_url = 'https://ghproxy.com/' + file.download_url
-
     if (isImage(file.name)) {
       viewerApi({
         options: {
@@ -169,7 +153,7 @@ const onFileItemClicked = (file) => {
 
 const downloadFile = (file) => {
   // 镜像加速
-  const url = `https://ghproxy.com/${file.download_url}`
+  const url = 'https://ghproxy.com/' + file.download_url
   FileSaver.saveAs(url, file.name)
 }
 
