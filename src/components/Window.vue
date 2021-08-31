@@ -225,7 +225,7 @@ const onMouseOrTouchUp = () => {
   top: calc(#{$desktop-grid-height} * 0.5 - var(--window-height) * 0.5);
   left: calc(50% - var(--window-width) * 0.5);
   background-color: $window-background-color;
-  width: var(--window-height);
+  width: var(--window-width);
   height: var(--window-height);
   border-radius: $window-border-radius;
   box-shadow: $window-shadow;
@@ -239,6 +239,12 @@ const onMouseOrTouchUp = () => {
   //消除transition，否则每次位置更新都需要动画过度渲染，导致拖拽不跟手
   &-dragged {
     transition: none ! important;
+  }
+
+  @include media('<=desktop', '>=tablet') {
+    $size-var: 84vh;
+    --window-width: #{$size-var * 0.5};
+    --window-height: #{$size-var};
   }
 
   @include media('<tablet') {

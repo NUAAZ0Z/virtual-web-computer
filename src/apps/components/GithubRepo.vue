@@ -179,16 +179,6 @@ const onRepoChosen = (config) => {
 $header-height: 42px;
 
 .github-repo {
-  @include media('<=desktop') {
-    $size-var: 84vh;
-    --window-width: #{$size-var * 0.5};
-    --window-height: #{$size-var};
-  }
-  width: var(--window-width);
-  height: var(--window-height);
-  top: calc(#{$desktop-grid-height} * 0.5 - var(--window-height) * 0.5);
-  left: calc(50% - var(--window-width) * 0.5);
-
   ::v-deep(.window-body) {
     width: 100%;
     height: 100%;
