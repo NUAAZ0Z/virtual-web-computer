@@ -47,7 +47,7 @@ import {
   WINDOW_MINIMIZED,
   WINDOW_MAXIMIZED,
 } from '../common/window-state-manager'
-import { computed, inject, reactive, ref, watch } from 'vue'
+import { computed, inject, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { ACTIVE_APP } from '../store/state.type'
 
 const props = defineProps({
@@ -108,6 +108,20 @@ const onWindowClicked = () => {
   windowStyle.zIndex = updateZIndex()
   store.commit(MOUNT_APP, props.config.name)
 }
+
+// 当浏览器调整大小时，清除行内样式，让所有窗口回归中央
+const onBrowserWindowResized = () => {
+  windowStyle.left = undefined
+  windowStyle.top = undefined
+}
+
+onMounted(() => {
+  window.addEventListener('resize', onBrowserWindowResized)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', onBrowserWindowResized)
+})
 
 //////////////////////////////// Drag Begin //////////////////////////
 let shiftX, shiftY, windowWidth, windowHeight, clientWidth, clientHeight
