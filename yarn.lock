@@ -1272,10 +1272,23 @@ util-deprecate@^1.0.2:
   resolved "https://registry.nlark.com/util-deprecate/download/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
 
+v-viewer@^3.0.9:
+  version "3.0.9"
+  resolved "https://registry.nlark.com/v-viewer/download/v-viewer-3.0.9.tgz?cache=0&sync_timestamp=1626094583697&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fv-viewer%2Fdownload%2Fv-viewer-3.0.9.tgz#1c55b1a4dcd4dc1adabdd0e03944984e84d58cc6"
+  integrity sha1-HFWxpNzU3BravdDgOUSYToTVjMY=
+  dependencies:
+    lodash "^4.17.21"
+    viewerjs "^1.9.0"
+
 v8-compile-cache@^2.0.3:
   version "2.3.0"
   resolved "https://registry.npm.taobao.org/v8-compile-cache/download/v8-compile-cache-2.3.0.tgz#2de19618c66dc247dcfb6f99338035d8245a2cee"
   integrity sha1-LeGWGMZtwkfc+2+ZM4A12CRaLO4=
+
+viewerjs@^1.9.0:
+  version "1.10.1"
+  resolved "https://registry.nlark.com/viewerjs/download/viewerjs-1.10.1.tgz#07499ed043d0a29e3002b90f55c5b228bd1a742c"
+  integrity sha1-B0me0EPQop4wArkPVcWyKL0adCw=
 
 vite-plugin-compression@^0.3.3:
   version "0.3.3"

@@ -68,6 +68,7 @@ import WindowModal from '../../components/WindowModal.vue'
 import { computed, onBeforeMount, onMounted, reactive, ref, watch } from 'vue'
 import { getContent } from '../../common/github-api'
 import FileSaver from 'file-saver'
+import { api as viewerApi } from 'v-viewer'
 
 const props = defineProps({
   config: Object,
@@ -87,15 +88,14 @@ let fileToShow = reactive({
   path: '',
   download_url: '',
 })
-
-const initParams = () => {
-  owner.value = props.config.repos[0].owner
-  repo.value = props.config.repos[0].repo
-}
+let images = []
 
 onBeforeMount(() => {
-  initParams()
+  owner.value = props.config.repos[0].owner
+  repo.value = props.config.repos[0].repo
 })
+
+const isImage = (filename) => /\.(jpg|jpeg|png|GIF|JPG|PNG|svg|webp)$/.test(filename)
 
 const fetchContents = async () => {
   loading.value = true
@@ -105,7 +105,8 @@ const fetchContents = async () => {
     path: path.value,
   })
   if (res) {
-    files.value = res.data.sort((a, b) => {
+    // 对文件按照文件名进行排序
+    const sortedResult = res.data.sort((a, b) => {
       const ad = a.type === 'dir'
       const bd = b.type === 'dir'
       if ((ad && bd) || (!ad && !bd)) {
@@ -115,6 +116,16 @@ const fetchContents = async () => {
       } else {
         return 1
       }
+    })
+    // 筛选出文件里面的图片
+    let imageIndex = -1
+    files.value = sortedResult.map(f => {
+      if (isImage(f.name)) {
+        images.push('https://ghproxy.com/' + f.download_url)
+        imageIndex++
+        return {...f, imageIndex}
+      }
+      return {...f}
     })
   }
   loading.value = false
@@ -141,11 +152,19 @@ const onFileItemClicked = (file) => {
     fileToShow.path = file.path
     fileToShow.name = file.name
     fileToShow.download_url = 'https://ghproxy.com/' + file.download_url
-  }
-}
 
-const isImage = (filename) => {
-  return /\.(jpg|jpeg|png|GIF|JPG|PNG|svg|webp)$/.test(filename)
+    if (isImage(file.name)) {
+      viewerApi({
+        options: {
+          toolbar: true,
+          // url: 'data-source',
+          initialViewIndex: file.imageIndex,
+          zIndex: 999999,
+        },
+        images,
+      })
+    }
+  }
 }
 
 const downloadFile = (file) => {
