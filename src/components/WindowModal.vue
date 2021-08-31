@@ -55,6 +55,7 @@ const emits = defineEmits(['update:show-modal'])
 
     &::-webkit-scrollbar {
       width: 0;
+      height: 0;
     }
   }
 }

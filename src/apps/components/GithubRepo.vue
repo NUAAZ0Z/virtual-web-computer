@@ -20,7 +20,9 @@
     </div>
     <div class="main-container">
       <transition name="fade">
-        <Loading v-if="loading" />
+        <DefaultTip v-if="loading" type="loading" />
+        <DefaultTip v-else-if="loadingFailed" type="data-error" :on-click="fetchContents" />
+        <DefaultTip v-else-if="files.length===0" type="no-data" />
         <ul v-else class="files">
           <li v-for="file in files" :key="file.name" class="file-item" @click="onFileItemClicked(file)">
             <span class="file-icon icon-no-hover">
@@ -58,9 +60,9 @@
 
 <script setup>
 import Window from '../../components/Window.vue'
-import Loading from '../../components/Loading.vue'
+import DefaultTip from '../../components/DefaultTip.vue'
 import WindowModal from '../../components/WindowModal.vue'
-import { computed, onBeforeMount, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { getContent } from '../../common/github-api'
 import FileSaver from 'file-saver'
 import { api as viewerApi } from 'v-viewer'
@@ -74,6 +76,7 @@ const repo = ref('')
 const path = ref('')
 const files = ref([])
 const loading = ref(true)
+const loadingFailed = ref(false)
 const showRepoModal = ref(false)
 const showSearchModal = ref(false)
 let images = []
@@ -87,12 +90,15 @@ const isImage = (filename) => /\.(jpg|jpeg|png|GIF|JPG|PNG|svg|webp)$/.test(file
 
 const fetchContents = async () => {
   loading.value = true
+  loadingFailed.value = false
+  files.value = []
   const res = await getContent({
     owner: owner.value,
     repo: repo.value,
     path: path.value,
   })
-  if (res) {
+  if (res.data) {
+    // 获取文件成功
     // 对文件按照文件名进行排序
     const sortedResult = res.data.sort((a, b) => {
       const ad = a.type === 'dir'
@@ -116,6 +122,9 @@ const fetchContents = async () => {
       }
       return {...f}
     })
+  } else {
+    // 加载数据失败
+    loadingFailed.value = true
   }
   loading.value = false
 }
@@ -140,8 +149,6 @@ const onFileItemClicked = (file) => {
     if (isImage(file.name)) {
       viewerApi({
         options: {
-          toolbar: true,
-          // url: 'data-source',
           initialViewIndex: file.imageIndex,
           zIndex: 999999,
         },

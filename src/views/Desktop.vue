@@ -5,7 +5,7 @@
     <DesktopDock />
     <div class="desktop-bg" />
     <transition name="fade">
-      <Loading v-if="!bgLoaded" />
+      <DefaultTip v-if="!bgLoaded" type="loading" />
     </transition>
   </div>
 </template>
@@ -13,7 +13,7 @@
 <script setup>
 import DesktopGrid from '../components/DesktopGrid.vue'
 import DesktopDock from '../components/DesktopDock.vue'
-import Loading from '../components/Loading.vue'
+import DefaultTip from '../components/DefaultTip.vue'
 import { useStore } from 'vuex'
 import { computed, onBeforeMount, ref } from 'vue'
 import { APP_MOUNTED } from '../store/getter.type'
