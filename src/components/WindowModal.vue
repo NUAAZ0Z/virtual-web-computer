@@ -6,7 +6,9 @@
     <div class="modal-title">
       {{ props.title }}
     </div>
-    <slot></slot>
+    <div class="model-content">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -32,12 +34,11 @@ const emits = defineEmits(['update:show-modal'])
   @include gen-absolute(100%, 0, auto, 0);
   background-color: white;
   transition: all .2s ease-out;
-  max-height: 540px;
-  overflow: auto;
   padding: 8px 0;
   border-top-left-radius: 18px;
   border-top-right-radius: 18px;
   user-select: none;
+
 
   &-activated {
     transform: translateY(-100%);
@@ -46,6 +47,15 @@ const emits = defineEmits(['update:show-modal'])
   .modal-title {
     font-size: 13px;
     padding: 4px 16px;
+  }
+
+  .model-content {
+    overflow: scroll;
+    max-height: 540px;
+
+    &::-webkit-scrollbar {
+      width: 0;
+    }
   }
 }
 </style>

@@ -23,7 +23,7 @@
         <Loading v-if="loading" />
         <ul v-else class="files">
           <li v-for="file in files" :key="file.name" class="file-item" @click="onFileItemClicked(file)">
-            <span class="file-icon icon-button">
+            <span class="file-icon icon-no-hover">
               <i v-if="file.type==='dir'" class="iconfont icon-folder" />
               <i v-else class="iconfont icon-file" />
             </span>
@@ -32,7 +32,7 @@
             </span>
             <span class="file-operation icon-button">
               <i v-if="file.type==='dir'" class="iconfont icon-arrow-right" />
-              <i v-else class="iconfont icon-arrow-down" @click="downloadFile(file)" />
+              <i v-else class="iconfont icon-arrow-down" @click.stop="downloadFile(file)" />
             </span>
           </li>
         </ul>
@@ -54,7 +54,9 @@
       搜索
     </WindowModal>
     <WindowModal v-model:show-modal="showFileDetailModal" title="文件详情">
-      文件详情
+      <div v-if="isImage(fileToShow.name)" class="image-preview">
+        <img :src="fileToShow.download_url" :alt="fileToShow.name">
+      </div>
     </WindowModal>
   </Window>
 </template>
@@ -79,6 +81,12 @@ const loading = ref(true)
 const showRepoModal = ref(false)
 const showSearchModal = ref(false)
 const showFileDetailModal = ref(false)
+let fileToShow = reactive({
+  name: '',
+  size: 0,
+  path: '',
+  download_url: '',
+})
 
 const initParams = () => {
   owner.value = props.config.repos[0].owner
@@ -130,7 +138,14 @@ const onFileItemClicked = (file) => {
     path.value += `/${file.name}`
   } else {
     showFileDetailModal.value = true
+    fileToShow.path = file.path
+    fileToShow.name = file.name
+    fileToShow.download_url = 'https://ghproxy.com/' + file.download_url
   }
+}
+
+const isImage = (filename) => {
+  return /\.(jpg|jpeg|png|GIF|JPG|PNG|svg|webp)$/.test(filename)
 }
 
 const downloadFile = (file) => {
@@ -170,9 +185,11 @@ $header-height: 42px;
     position: relative;
   }
 
-  .icon-button {
-    $button-margin: 4px;
-    $button-size: $header-height - $button-margin * 2;
+  $button-margin: 4px;
+  $button-size: $header-height - $button-margin * 2;
+
+  .icon-button,
+  .icon-no-hover {
     display: inline-block;
     width: $button-size;
     height: $button-size;
@@ -180,10 +197,10 @@ $header-height: 42px;
     margin: $button-margin;
     border-radius: $button-size;
     line-height: $button-size;
+  }
 
-    &:hover {
-      background-color: rgba(black, 0.1);
-    }
+  .icon-button:hover {
+    background-color: rgba(black, 0.1);
   }
 
   .header {
@@ -249,6 +266,37 @@ $header-height: 42px;
         font-size: 20px !important;
       }
     }
+
+    @include media('>=desktop') {
+      .files {
+        @include gen-flex(row, flex-start, stretch);
+        flex-wrap: wrap;
+        width: fit-content;
+
+        .file-item {
+          flex-direction: column;
+          width: 110px;
+          min-height: 144px;
+          margin: $spacing $spacing * 0.5;
+          text-align: center;
+          word-break: break-word;
+
+          .file-icon {
+            width: $button-size * 2;
+            height: $button-size * 2;
+
+            .iconfont {
+              font-size: 32px !important;
+              line-height: $button-size * 2;
+            }
+          }
+
+          .file-info {
+            padding: $spacing;
+          }
+        }
+      }
+    }
   }
 
   .repo-item {
@@ -265,6 +313,16 @@ $header-height: 42px;
         font-size: 18px;
         font-weight: bold;
       }
+    }
+  }
+
+  .image-preview {
+    text-align: center;
+
+    img {
+      width: auto;
+      height: 320px;
+      object-fit: contain;
     }
   }
 }
