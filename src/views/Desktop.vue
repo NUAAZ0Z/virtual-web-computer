@@ -1,5 +1,5 @@
 <template>
-  <div class="desktop">
+  <div class="desktop" @contextmenu.prevent @mouseup.right="onRightMouseUp" @mouseup.left="showRightClickMenu=false">
     <DesktopGrid />
     <component :is="app.component" v-for="app in appMounted" :key="app.name" :config="getAppConfig(app)" />
     <DesktopDock />
@@ -7,13 +7,15 @@
     <transition name="fade">
       <DefaultTip v-if="!bgLoaded" type="loading" />
     </transition>
+    <DesktopRightMenu v-model:show="showRightClickMenu" :event="rightClickEvent" />
   </div>
 </template>
 
 <script setup>
-import DesktopGrid from '../components/DesktopGrid.vue'
-import DesktopDock from '../components/DesktopDock.vue'
 import DefaultTip from '../components/DefaultTip.vue'
+import DesktopDock from '../components/DesktopDock.vue'
+import DesktopGrid from '../components/DesktopGrid.vue'
+import DesktopRightMenu from '../components/DesktopRightMenu.vue'
 import { useStore } from 'vuex'
 import { computed, onBeforeMount, ref } from 'vue'
 import { APP_MOUNTED } from '../store/getter.type'
@@ -22,6 +24,8 @@ const store = useStore()
 const appMounted = computed(() => store.getters[APP_MOUNTED])
 const bgLoaded = ref(false)
 const loadingFailed = ref(false)
+const showRightClickMenu = ref(false)
+const rightClickEvent = ref({})
 
 const getAppConfig = (app) => {
   const copy = {...app}
@@ -43,6 +47,11 @@ onBeforeMount(() => {
     loadingFailed.value = true
   }
 })
+
+const onRightMouseUp = (e) => {
+  rightClickEvent.value = e
+  showRightClickMenu.value = true
+}
 </script>
 
 <style scoped lang="scss">

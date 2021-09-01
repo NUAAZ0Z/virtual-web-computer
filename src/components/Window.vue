@@ -1,6 +1,6 @@
 <template>
   <div class="window" :style="windowStyle" :class="[windowStatusClass,windowDraggedClass]"
-       @click.stop="onWindowClicked"
+       @click.stop="onWindowClicked" @mouseup.right.stop
   >
     <div class="window-title-bar" :class="{'window-title-bar-transparent': config.transparentTitleBar}">
       <img class="icon" :src="'/icons/apps/' + config.icon" alt="" />
