@@ -9,6 +9,7 @@ export default defineConfig({
         viteCompression({
             algorithm: 'brotliCompress',
             ext: 'br',
+            filter: '/\.(js|mjs|json|css|html|jpg|jpeg|png|webp|svg)$/i',
         }),
     ],
 })
