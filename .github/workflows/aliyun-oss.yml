@@ -1,0 +1,28 @@
+name: Deploy to AliyunOSS
+on: [push]
+jobs:
+  Deploy-to-AliyunOSS:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 2
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+
+      - name: Build Project
+        run: yarn && yarn build
+
+      - name: Download OSSUtil
+        uses: yizhoumo/setup-ossutil@v1
+        with:
+            ossutil-version: '1.7.7'
+            endpoint: ${{ secrets.OSS_ENDPOINT }}
+            access-key-id: ${{ secrets.OSS_ACCESS_KEY_ID }}
+            access-key-secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+
+      - name: Upload to OSS
+        run: ossutil cp -rf dist/ oss://${{ secrets.OSS_BUCKET }}/
