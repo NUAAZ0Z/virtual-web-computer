@@ -49,7 +49,6 @@ export function useAppManager() {
     // 挂载 App
     const mountApp = async (appName) => {
         await store.commit(MOUNT_APP, appName)
-        console.log(store.state.apps)
         await updateRouteQuery()
     }
 

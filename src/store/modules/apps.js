@@ -60,7 +60,6 @@ const mutations = {
 
 const actions = {
     [INITIALIZE_APP_STATE]({ commit, state }, payload) {
-        console.log(payload)
         const { [ACTIVE_APP]: activeApp, [APP_MOUNTED_NAMES]: appMountedNames } = payload
         if (appMountedNames) {
             state[[APP_MOUNTED_NAMES]] = appMountedNames

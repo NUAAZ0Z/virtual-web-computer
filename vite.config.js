@@ -12,4 +12,12 @@ export default defineConfig({
             filter: '/\.(js|mjs|json|css|html|jpg|jpeg|png|webp|svg)$/i',
         }),
     ],
+    build: {
+        terserOptions: {
+            compress: {
+                //生产环境时移除console
+                drop_console: true,
+            },
+        },
+    },
 })
