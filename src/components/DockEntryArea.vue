@@ -1,6 +1,6 @@
 <template>
   <div v-for="entry in apps" :key="entry.name"
-       class="dock-entry" @click.stop="launchApp(entry.name)"
+       class="dock-entry" @click.stop="mountApp(entry.name)"
   >
     <img :src="'/icons/apps/' + entry.icon" alt="图标">
     <div class="dock-tooltip">
@@ -12,12 +12,14 @@
 <script setup>
 import { MOUNT_APP } from '../store/mutation.type'
 import { useStore } from 'vuex'
+import { useAppManager } from '../common/app-manager'
 
 defineProps({
       apps: Array,
     },
 )
 const store = useStore()
+const { mountApp } = useAppManager()
 const launchApp = (appName) => {
   store.commit(MOUNT_APP, appName)
 }
@@ -25,6 +27,7 @@ const launchApp = (appName) => {
 
 <style lang="scss">
 @import "../assets/style/var";
+
 .dock-entry {
   position: relative;
   width: 48px;

@@ -1,0 +1,67 @@
+import { INITIALIZE_APP_STATE } from '../store/action.type'
+import { MOUNT_APP, UNMOUNT_APP } from '../store/mutation.type'
+import { useRoute } from 'vue-router'
+import { ACTIVE_APP, APP_MOUNTED_NAMES } from '../store/state.type'
+import store from '../store'
+import router from '../router'
+
+// URL中的查询参数键名
+const appStateKey = 'v'
+
+export function useAppManager() {
+
+    // 反序列化URL上的查询参数 appStateKey
+    const deserializeRouteKey = (route) => {
+        if (route.query[appStateKey]) {
+            return JSON.parse(window.atob(route.query[appStateKey].toString()))
+        }
+    }
+
+    // 序列化查询参数
+    const serializeRouteKey = (config) => {
+        return window.btoa(JSON.stringify(config))
+    }
+
+    // App状态变化时，如挂载、卸载App，更新URL参数
+    const updateRouteQuery = async () => {
+        const config = {
+            [APP_MOUNTED_NAMES]: store.state.apps[[APP_MOUNTED_NAMES]],
+            [ACTIVE_APP]: store.state.apps[[ACTIVE_APP]],
+        }
+        const key = serializeRouteKey(config)
+        await router.push({
+            name: 'desktop',
+            query: {
+                [appStateKey]: key,
+            },
+        })
+    }
+
+    // 根据URL参数设置State
+    const initializeAppState = async () => {
+        const route = useRoute()
+        const config = deserializeRouteKey(router.currentRoute.value)
+        if (config) {
+            await store.dispatch(INITIALIZE_APP_STATE, config)
+        }
+    }
+
+    // 挂载 App
+    const mountApp = async (appName) => {
+        await store.commit(MOUNT_APP, appName)
+        console.log(store.state.apps)
+        await updateRouteQuery()
+    }
+
+    // 卸载 App
+    const unmountApp = async (appName) => {
+        store.commit(UNMOUNT_APP, appName)
+        await updateRouteQuery()
+    }
+
+    return {
+        initializeAppState,
+        mountApp,
+        unmountApp,
+    }
+}

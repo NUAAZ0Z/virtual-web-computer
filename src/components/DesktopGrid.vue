@@ -4,7 +4,7 @@
          :key="app.name"
          class="desktop-entry"
          @click="onEntryClicked(app.name)"
-         @dblclick="launchApp(app.name)"
+         @dblclick="mountApp(app.name)"
     >
       <img class="icon" :src="'/icons/apps/' + app.icon" alt="图标">
       <div class="label">
@@ -19,11 +19,13 @@ import { useStore } from 'vuex'
 import { MOUNT_APP } from '../store/mutation.type'
 import { computed, inject } from 'vue'
 import { APP_AT_DESKTOP } from '../store/getter.type'
+import { useAppManager } from '../common/app-manager'
 
 const store = useStore()
-const launchApp = (appName) => {
-  store.commit(MOUNT_APP, appName)
-}
+const { mountApp } = useAppManager()
+// const launchApp = (appName) => {
+//   store.commit(MOUNT_APP, appName)
+// }
 const appAtDesktop = computed(() => store.getters[APP_AT_DESKTOP])
 
 const deviceInfo = inject('deviceInfo')
@@ -31,7 +33,7 @@ const deviceInfo = inject('deviceInfo')
 const notDesktop = deviceInfo.platform.type === 'desktop'
 const onEntryClicked = (appName) => {
   if (!notDesktop) {
-    launchApp(appName)
+    mountApp(appName)
   }
 }
 

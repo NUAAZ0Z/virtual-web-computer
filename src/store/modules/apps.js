@@ -9,6 +9,7 @@ import {
     GET_APP,
 } from '../getter.type'
 import { CLEAR_ACTIVE_APP, MOUNT_APP, UNMOUNT_APP } from '../mutation.type'
+import { INITIALIZE_APP_STATE } from '../action.type'
 
 const apps = Object.values(Applications)
 
@@ -57,9 +58,23 @@ const mutations = {
     },
 }
 
+const actions = {
+    [INITIALIZE_APP_STATE]({ commit, state }, payload) {
+        console.log(payload)
+        const { [ACTIVE_APP]: activeApp, [APP_MOUNTED_NAMES]: appMountedNames } = payload
+        if (appMountedNames) {
+            state[[APP_MOUNTED_NAMES]] = appMountedNames
+        }
+        if (activeApp) {
+            state[[ACTIVE_APP]] = activeApp
+        }
+    },
+}
+
 export default {
     namespaced: false,
     state,
     getters,
     mutations,
+    actions,
 }

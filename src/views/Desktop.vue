@@ -19,8 +19,12 @@ import DesktopRightMenu from '../components/DesktopRightMenu.vue'
 import { useStore } from 'vuex'
 import { computed, onBeforeMount, ref } from 'vue'
 import { APP_MOUNTED } from '../store/getter.type'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
+import { INITIALIZE_APP_STATE } from '../store/action.type'
+import { useAppManager } from '../common/app-manager'
 
 const store = useStore()
+const { initializeAppState } = useAppManager()
 const appMounted = computed(() => store.getters[APP_MOUNTED])
 const bgLoaded = ref(false)
 const loadingFailed = ref(false)
@@ -28,7 +32,7 @@ const showRightClickMenu = ref(false)
 const rightClickEvent = ref({})
 
 const getAppConfig = (app) => {
-  const copy = {...app}
+  const copy = { ...app }
   delete copy.component
   return copy
 }
@@ -46,12 +50,29 @@ onBeforeMount(() => {
   img.onerror = () => {
     loadingFailed.value = true
   }
+  // 根据查询参数初始化App状态
+  initializeAppState()
 })
 
 const onRightMouseUp = (e) => {
   rightClickEvent.value = e
   showRightClickMenu.value = true
 }
+
+// 根据URL参数设置State
+// const initializeAppState = (route) => {
+//   const configKey = 'v'
+//   if (route.query[configKey]) {
+//     const config = JSON.parse(window.atob(route.query[configKey].toString()))
+//     if (config) {
+//       store.dispatch(INITIALIZE_APP_STATE, config)
+//     }
+//   }
+// }
+// // 当路由更新时
+// onBeforeRouteUpdate((to, from, next) => {
+//   initializeAppState(to)
+// })
 </script>
 
 <style scoped lang="scss">

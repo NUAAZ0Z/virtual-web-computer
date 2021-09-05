@@ -49,6 +49,7 @@ import {
 } from '../common/window-state-manager'
 import { computed, inject, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { ACTIVE_APP } from '../store/state.type'
+import { useAppManager } from '../common/app-manager'
 
 const props = defineProps({
   config: Object,
@@ -61,6 +62,7 @@ const {
   unMaximizeWindow,
   updateZIndex,
 } = useWindowStateManager()
+const { unmountApp } = useAppManager()
 const windowStyle = reactive({
   backgroundColor: props.config.bgColor,
   zIndex: updateZIndex(),
@@ -82,7 +84,8 @@ const killApp = (appName) => {
   windowStatusClass.value = `${windowStatusClass.value} window-closed`
   // 在窗口关闭动画结束后再卸载
   setTimeout(() => {
-    store.commit(UNMOUNT_APP, appName)
+    // store.commit(UNMOUNT_APP, appName)
+    unmountApp(appName)
   }, 200)
 }
 
@@ -106,7 +109,8 @@ watch(activeApp, val => {
 
 const onWindowClicked = () => {
   windowStyle.zIndex = updateZIndex()
-  store.commit(MOUNT_APP, props.config.name)
+  // 通过mountApp使得窗口
+  // store.commit(MOUNT_APP, props.config.name)
 }
 
 // 当浏览器调整大小时，清除行内样式，让所有窗口回归中央
@@ -179,7 +183,7 @@ const onMouseOrTouchDown = (event) => {
   if (isDesktop) {
     window.addEventListener('mousemove', onMouseMove)
   } else {
-    window.addEventListener('touchmove', onMouseMove, {passive: true})
+    window.addEventListener('touchmove', onMouseMove, { passive: true })
   }
 }
 
