@@ -34,7 +34,7 @@ const menuConfig = [
   },
 ]
 
-const {show, event} = toRefs(props)
+const { show, event } = toRefs(props)
 
 const padding = 4
 const menuWidth = 240 + padding * 2
@@ -45,7 +45,7 @@ watch(event, newVal => {
     '--right-click-menu-height': menuHeight + 'px',
     '--right-click-menu-width': menuWidth + 'px',
   }
-  const {clientX, clientY} = newVal
+  const { clientX, clientY } = newVal
   let top, left, right, bottom
   if (clientX + menuWidth > document.body.clientWidth) {
     right = (document.body.clientWidth - clientX - padding) + 'px'
@@ -58,7 +58,7 @@ watch(event, newVal => {
   } else {
     top = (clientY + padding) + 'px'
   }
-  rightMenuStyle.value = {...whVar, top, left, right, bottom}
+  rightMenuStyle.value = { ...whVar, top, left, right, bottom }
 })
 </script>
 

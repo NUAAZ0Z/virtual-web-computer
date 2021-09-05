@@ -32,7 +32,7 @@ const props = defineProps({
 
 .loading,
 .no-data,
-.data-error{
+.data-error {
   position: absolute;
   content: "";
   top: 0;

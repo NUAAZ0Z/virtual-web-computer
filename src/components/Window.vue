@@ -40,7 +40,7 @@
 
 <script setup>
 import { useStore } from 'vuex'
-import { MOUNT_APP, UNMOUNT_APP } from '../store/mutation.type'
+import { MOUNT_APP } from '../store/mutation.type'
 import {
   useWindowStateManager,
   WINDOW_NORMAL,
@@ -110,7 +110,7 @@ watch(activeApp, val => {
 const onWindowClicked = () => {
   windowStyle.zIndex = updateZIndex()
   // 通过mountApp使得窗口
-  // store.commit(MOUNT_APP, props.config.name)
+  store.commit(MOUNT_APP, props.config.name)
 }
 
 // 当浏览器调整大小时，清除行内样式，让所有窗口回归中央

@@ -11,6 +11,6 @@ instance.interceptors.response.use((res) => {
     return Promise.resolve(null)
 })
 
-export const getContent = async ({owner, repo, path = ''}) => {
+export const getContent = async ({ owner, repo, path = '' }) => {
     return await instance.get(`/repos/${owner}/${repo}/contents/${path}`)
 }
