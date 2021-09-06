@@ -37,14 +37,13 @@ const getAppConfig = (app) => {
   return copy
 }
 
-const bgImgUrl = ref('')
-const desktopBg = computed(() => `url("${bgImgUrl.value}")`)
+const desktopBg = computed(() => `url("${wallpaper.value}")`)
 
 const initializeBg = () => {
   // 等待桌面背景图加载完毕再真正显示桌面内容
   bgLoaded.value = false
   const img = new Image()
-  img.src = bgImgUrl.value
+  img.src = wallpaper.value
   img.onload = () => {
     bgLoaded.value = true
   }
@@ -54,9 +53,7 @@ const initializeBg = () => {
 }
 
 onBeforeMount(async () => {
-  // 获取第一张壁纸，作为默认
-  const res = await wallpaper.value
-  bgImgUrl.value = res.default
+  // 进入时，在壁纸加载完成前显示加载状态
   initializeBg()
   // 根据查询参数初始化App状态
   await initializeAppState()
@@ -67,9 +64,7 @@ const onRightMouseUp = (e) => {
   showRightClickMenu.value = true
 }
 
-watch(wallpaper, async (val) => {
-  const res = await val
-  bgImgUrl.value = res.default
+watch(wallpaper, async () => {
   initializeBg()
 })
 </script>

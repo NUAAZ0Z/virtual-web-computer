@@ -1,14 +1,14 @@
 import { CURRENT_WALLPAPER } from '../state.type'
 import { SWITCH_WALLPAPER } from '../mutation.type'
 
-const wallpapers = Object.values(import.meta.glob('../../assets/wallpapers/*'))
+const wallpapers = Object.values(import.meta.globEager('../../assets/wallpapers/*'))
 
 const state = {
     [CURRENT_WALLPAPER]: 0,
 }
 
 const getters = {
-    [CURRENT_WALLPAPER]: (state) => wallpapers[state[CURRENT_WALLPAPER]](),
+    [CURRENT_WALLPAPER]: (state) => wallpapers[state[CURRENT_WALLPAPER]].default,
 }
 
 const mutations = {
