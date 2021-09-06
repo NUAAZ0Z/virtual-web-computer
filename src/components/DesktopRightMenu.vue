@@ -9,6 +9,8 @@
 
 <script setup>
 import { ref, toRefs, watch } from 'vue'
+import { useStore } from 'vuex'
+import { SWITCH_WALLPAPER } from '../store/mutation.type'
 
 const props = defineProps({
   show: Boolean,
@@ -17,6 +19,8 @@ const props = defineProps({
 const emits = defineEmits([
   'update:show',
 ])
+const store = useStore()
+
 const rightMenuStyle = ref({})
 
 const menuConfig = [
@@ -30,7 +34,9 @@ const menuConfig = [
   {
     text: '切换壁纸',
     icon: 'icon-desert',
-    func: () => undefined,
+    func: () => {
+      store.commit(SWITCH_WALLPAPER)
+    },
   },
 ]
 
@@ -40,7 +46,6 @@ const padding = 4
 const menuWidth = 240 + padding * 2
 const menuHeight = padding + (36 + padding) * menuConfig.length
 watch(event, newVal => {
-  console.log(newVal)
   const whVar = {
     '--right-click-menu-height': menuHeight + 'px',
     '--right-click-menu-width': menuWidth + 'px',

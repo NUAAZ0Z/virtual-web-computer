@@ -62,10 +62,10 @@ const actions = {
     [INITIALIZE_APP_STATE]({ commit, state }, payload) {
         const { [ACTIVE_APP]: activeApp, [APP_MOUNTED_NAMES]: appMountedNames } = payload
         if (appMountedNames) {
-            state[[APP_MOUNTED_NAMES]] = appMountedNames
+            state[APP_MOUNTED_NAMES] = appMountedNames
         }
         if (activeApp) {
-            state[[ACTIVE_APP]] = activeApp
+            state[ACTIVE_APP] = activeApp
         }
     },
 }

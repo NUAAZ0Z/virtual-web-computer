@@ -3,7 +3,7 @@
     <DesktopGrid />
     <component :is="app.component" v-for="app in appMounted" :key="app.name" :config="getAppConfig(app)" />
     <DesktopDock />
-    <div class="desktop-bg" />
+    <div class="desktop-bg" :style="{'backgroundImage': desktopBg}" />
     <transition name="fade">
       <DefaultTip v-if="!bgLoaded" type="loading" />
     </transition>
@@ -17,13 +17,15 @@ import DesktopDock from '../components/DesktopDock.vue'
 import DesktopGrid from '../components/DesktopGrid.vue'
 import DesktopRightMenu from '../components/DesktopRightMenu.vue'
 import { useStore } from 'vuex'
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { APP_MOUNTED } from '../store/getter.type'
 import { useAppManager } from '../common/app-manager'
+import { CURRENT_WALLPAPER } from '../store/state.type'
 
 const store = useStore()
 const { initializeAppState } = useAppManager()
 const appMounted = computed(() => store.getters[APP_MOUNTED])
+const wallpaper = computed(() => store.getters[CURRENT_WALLPAPER])
 const bgLoaded = ref(false)
 const loadingFailed = ref(false)
 const showRightClickMenu = ref(false)
@@ -35,27 +37,41 @@ const getAppConfig = (app) => {
   return copy
 }
 
-const bgImgUrl = 'https://images.unsplash.com/photo-1512273222628-4daea6e55abb?w=1920&q=90&auto=format'
-const desktopBg = `url("${bgImgUrl}") center no-repeat`
+const bgImgUrl = ref('')
+const desktopBg = computed(() => `url("${bgImgUrl.value}")`)
 
-onBeforeMount(() => {
+const initializeBg = () => {
   // 等待桌面背景图加载完毕再真正显示桌面内容
+  bgLoaded.value = false
   const img = new Image()
-  img.src = bgImgUrl
+  img.src = bgImgUrl.value
   img.onload = () => {
     bgLoaded.value = true
   }
   img.onerror = () => {
     loadingFailed.value = true
   }
+}
+
+onBeforeMount(async () => {
+  // 获取第一张壁纸，作为默认
+  const res = await wallpaper.value
+  bgImgUrl.value = res.default
+  initializeBg()
   // 根据查询参数初始化App状态
-  initializeAppState()
+  await initializeAppState()
 })
 
 const onRightMouseUp = (e) => {
   rightClickEvent.value = e
   showRightClickMenu.value = true
 }
+
+watch(wallpaper, async (val) => {
+  const res = await val
+  bgImgUrl.value = res.default
+  initializeBg()
+})
 </script>
 
 <style scoped lang="scss">
@@ -72,8 +88,9 @@ const onRightMouseUp = (e) => {
     right: 0;
     left: 0;
     bottom: 0;
-    background: v-bind(desktopBg);
     background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
     z-index: -1;
   }
 }

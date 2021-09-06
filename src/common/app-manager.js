@@ -1,6 +1,5 @@
 import { INITIALIZE_APP_STATE } from '../store/action.type'
 import { MOUNT_APP, UNMOUNT_APP } from '../store/mutation.type'
-import { useRoute } from 'vue-router'
 import { ACTIVE_APP, APP_MOUNTED_NAMES } from '../store/state.type'
 import store from '../store'
 import router from '../router'
@@ -39,7 +38,6 @@ export function useAppManager() {
 
     // 根据URL参数设置State
     const initializeAppState = async () => {
-        const route = useRoute()
         const config = deserializeRouteKey(router.currentRoute.value)
         if (config) {
             await store.dispatch(INITIALIZE_APP_STATE, config)
