@@ -1,10 +1,11 @@
-<h1 style="text-align: center;"> Notes </h1>
+<h1 align="center"> Notes </h1>
 
-<!-- <div style="text-align: center;">
+<!-- <div align="center">
     <img src="./public/favicon.ico" width="300"  alt="Logo"/>
 </div> -->
 
-<div style="text-align: center;">
+<div align="center">
+
 [![Netlify Status](https://api.netlify.com/api/v1/badges/d831c364-4aec-45c8-a557-1ee6c356d7ec/deploy-status)](https://app.netlify.com/sites/nuaaz0z/deploys)
 [![Workflow Status](https://github.com/NUAAZ0Z/Notes/actions/workflows/aliyun-oss.yml/badge.svg)](https://github.com/NUAAZ0Z/Notes/actions)
 </div>
@@ -16,5 +17,5 @@
 
 ## Deployed
 
-- [https://npmdev.com](https://npmdev.com)
-- [https://nuaaz0z.netlify.app](https://nuaaz0z.netlify.app)
+- 🚀 国内阿里云OSS (CDN加速)：[https://npmdev.com](https://npmdev.com)
+- 🐢 国外Netlify：[https://nuaaz0z.netlify.app](https://nuaaz0z.netlify.app)
