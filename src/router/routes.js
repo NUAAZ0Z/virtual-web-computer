@@ -1,4 +1,5 @@
 import Desktop from '../views/Desktop.vue'
+import Blog from '../views/Blog.vue'
 
 export default [
     {
@@ -9,5 +10,10 @@ export default [
         path: '/desktop',
         name: 'desktop',
         component: Desktop,
+    },
+    {
+        path: '/blog',
+        name: 'blog',
+        component: Blog,
     },
 ]
