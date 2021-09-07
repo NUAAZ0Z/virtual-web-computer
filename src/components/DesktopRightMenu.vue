@@ -14,7 +14,7 @@ import { SWITCH_WALLPAPER } from '../store/mutation.type'
 
 const props = defineProps({
   show: Boolean,
-  event: Object,
+  clickPosition: Object,
 })
 const emits = defineEmits([
   'update:show',
@@ -40,12 +40,12 @@ const menuConfig = [
   },
 ]
 
-const { show, event } = toRefs(props)
+const { show, clickPosition } = toRefs(props)
 
 const padding = 4
 const menuWidth = 240 + padding * 2
 const menuHeight = padding + (36 + padding) * menuConfig.length
-watch(event, newVal => {
+watch(clickPosition, newVal => {
   const whVar = {
     '--right-click-menu-height': menuHeight + 'px',
     '--right-click-menu-width': menuWidth + 'px',

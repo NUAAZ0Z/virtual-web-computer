@@ -1,5 +1,5 @@
 <template>
-  <div class="desktop" @contextmenu.prevent @mouseup.right="onRightMouseUp" @mouseup.left="showRightClickMenu=false">
+  <div class="desktop" @contextmenu.prevent @mouseup.right="onRightMouseUp" @mouseup.left="showRightClickWidget=false">
     <DesktopGrid />
     <component :is="app.component" v-for="app in appMounted" :key="app.name" :config="getAppConfig(app)" />
     <DesktopDock />
@@ -7,7 +7,7 @@
     <transition name="fade">
       <DefaultTip v-if="!bgLoaded" type="loading" />
     </transition>
-    <DesktopRightMenu v-model:show="showRightClickMenu" :event="rightClickEvent" />
+    <DesktopRightMenu v-model:show="showRightClickWidget" :click-position="clickPosition" />
   </div>
 </template>
 
@@ -21,6 +21,7 @@ import { computed, onBeforeMount, ref, watch } from 'vue'
 import { APP_MOUNTED } from '../store/getter.type'
 import { useAppManager } from '../common/app-manager'
 import { CURRENT_WALLPAPER } from '../store/state.type'
+import { useRightClick } from '../common/right-click'
 
 const store = useStore()
 const { initializeAppState } = useAppManager()
@@ -28,8 +29,7 @@ const appMounted = computed(() => store.getters[APP_MOUNTED])
 const wallpaper = computed(() => store.getters[CURRENT_WALLPAPER])
 const bgLoaded = ref(false)
 const loadingFailed = ref(false)
-const showRightClickMenu = ref(false)
-const rightClickEvent = ref({})
+const { showRightClickWidget, clickPosition, onRightMouseUp } = useRightClick()
 
 const getAppConfig = (app) => {
   const copy = { ...app }
@@ -58,11 +58,6 @@ onBeforeMount(async () => {
   // 根据查询参数初始化App状态
   await initializeAppState()
 })
-
-const onRightMouseUp = (e) => {
-  rightClickEvent.value = e
-  showRightClickMenu.value = true
-}
 
 watch(wallpaper, async () => {
   initializeBg()
