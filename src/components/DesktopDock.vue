@@ -50,7 +50,6 @@ const appAtDockCenter = computed(() => store.getters[APP_AT_DOCK_CENTER])
 const appAtDockTray = computed(() => store.getters[APP_AT_DOCK_TRAY])
 
 const deviceInfo = inject('deviceInfo')
-const isMobile = deviceInfo.platform.type === 'mobile'
 </script>
 
 <style scoped lang="scss">

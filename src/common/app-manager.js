@@ -44,10 +44,16 @@ export function useAppManager() {
         }
     }
 
-    // 挂载 App
-    const mountApp = async (appName) => {
-        await store.commit(MOUNT_APP, appName)
-        await updateRouteQuery()
+    // 挂载 App，注意传入的是完整 App 配置
+    const mountApp = async (app) => {
+        if (app.component) {
+            await store.commit(MOUNT_APP, app.name)
+            await updateRouteQuery()
+        } else {
+            await router.push({
+                name: app.route,
+            })
+        }
     }
 
     // 卸载 App

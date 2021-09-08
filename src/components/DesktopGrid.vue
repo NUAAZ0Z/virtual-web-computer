@@ -3,8 +3,8 @@
     <div v-for="app in appAtDesktop"
          :key="app.name"
          class="desktop-entry"
-         @click="onEntryClicked(app.name)"
-         @dblclick="mountApp(app.name)"
+         @click="onEntryClicked(app)"
+         @dblclick="mountApp(app)"
     >
       <img class="icon" :src="'/icons/apps/' + app.icon" alt="图标">
       <div class="label">
@@ -16,24 +16,21 @@
 
 <script setup>
 import { useStore } from 'vuex'
-import { MOUNT_APP } from '../store/mutation.type'
 import { computed, inject } from 'vue'
 import { APP_AT_DESKTOP } from '../store/getter.type'
 import { useAppManager } from '../common/app-manager'
 
 const store = useStore()
 const { mountApp } = useAppManager()
-// const launchApp = (appName) => {
-//   store.commit(MOUNT_APP, appName)
-// }
+
 const appAtDesktop = computed(() => store.getters[APP_AT_DESKTOP])
 
 const deviceInfo = inject('deviceInfo')
 
 const notDesktop = deviceInfo.platform.type === 'desktop'
-const onEntryClicked = (appName) => {
+const onEntryClicked = (app) => {
   if (!notDesktop) {
-    mountApp(appName)
+    mountApp(app)
   }
 }
 
