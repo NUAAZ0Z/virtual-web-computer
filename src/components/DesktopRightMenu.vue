@@ -1,7 +1,6 @@
 <template>
   <ul v-show="show" class="desktop-right-menu" :style="rightMenuStyle" @click.stop="emits('update:show', false)">
     <li v-for="(config, index) in menuConfig" :key="index" class="menu-item" @click="config.func">
-      <i class="iconfont" :class="config.icon"></i>
       <span>{{ config.text }}</span>
     </li>
   </ul>
@@ -25,15 +24,13 @@ const rightMenuStyle = ref({})
 
 const menuConfig = [
   {
-    text: '刷新',
-    icon: 'icon-refresh',
+    text: '🔄 刷新',
     func: () => {
       location.reload()
     },
   },
   {
-    text: '切换壁纸',
-    icon: 'icon-desert',
+    text: '🖼️ 切换壁纸',
     func: () => {
       store.commit(SWITCH_WALLPAPER)
     },
