@@ -1,6 +1,6 @@
 <template>
   <ul v-show="show" class="desktop-right-menu" :style="rightMenuStyle" @click.stop="emits('update:show', false)">
-    <li v-for="(config, index) in menuConfig" :key="index" class="menu-item" @click="config.func">
+    <li v-for="(config, index) in menus" :key="index" class="menu-item" @click="config.func">
       <span>{{ config.text }}</span>
     </li>
   </ul>
@@ -9,11 +9,11 @@
 <script setup>
 import { ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import { SWITCH_WALLPAPER } from '../store/mutation.type'
 
 const props = defineProps({
   show: Boolean,
-  clickPosition: Object,
+  position: Object,
+  menus: Array,
 })
 const emits = defineEmits([
   'update:show',
@@ -22,32 +22,17 @@ const store = useStore()
 
 const rightMenuStyle = ref({})
 
-const menuConfig = [
-  {
-    text: '🔄 刷新',
-    func: () => {
-      location.reload()
-    },
-  },
-  {
-    text: '🖼️ 切换壁纸',
-    func: () => {
-      store.commit(SWITCH_WALLPAPER)
-    },
-  },
-]
-
-const { show, clickPosition } = toRefs(props)
+const { show, position, menus } = toRefs(props)
 
 const padding = 4
 const menuWidth = 240 + padding * 2
-const menuHeight = padding + (36 + padding) * menuConfig.length
-watch(clickPosition, newVal => {
+const menuHeight = padding + (36 + padding) * menus.value.length
+watch(position, pos => {
   const whVar = {
-    '--right-click-menu-height': menuHeight + 'px',
-    '--right-click-menu-width': menuWidth + 'px',
+    '--height': menuHeight + 'px',
+    '--width': menuWidth + 'px',
   }
-  const { clientX, clientY } = newVal
+  const { clientX, clientY } = pos
   let top, left, right, bottom
   if (clientX + menuWidth > document.body.clientWidth) {
     right = (document.body.clientWidth - clientX - padding) + 'px'
@@ -81,8 +66,8 @@ $border-radius: 8px;
 
   100% {
     opacity: 1;
-    height: var(--right-click-menu-height);
-    width: var(--right-click-menu-width);
+    height: var(--height);
+    width: var(--width);
   }
 }
 

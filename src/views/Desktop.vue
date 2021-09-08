@@ -7,7 +7,7 @@
     <transition name="fade">
       <DefaultTip v-if="!bgLoaded" type="loading" />
     </transition>
-    <DesktopRightMenu v-model:show="showRightClickWidget" :click-position="clickPosition" />
+    <RightClickMenu v-model:show="showRightClickWidget" :position="clickPosition" :menus="menus" />
   </div>
 </template>
 
@@ -15,13 +15,14 @@
 import DefaultTip from '../components/DefaultTip.vue'
 import DesktopDock from '../components/DesktopDock.vue'
 import DesktopGrid from '../components/DesktopGrid.vue'
-import DesktopRightMenu from '../components/DesktopRightMenu.vue'
+import RightClickMenu from '../components/RightClickMenu.vue'
 import { useStore } from 'vuex'
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { APP_MOUNTED } from '../store/getter.type'
 import { useAppManager } from '../common/app-manager'
 import { CURRENT_WALLPAPER } from '../store/state.type'
 import { useRightClick } from '../common/right-click'
+import { SWITCH_WALLPAPER } from '../store/mutation.type'
 
 const store = useStore()
 const { initializeAppState } = useAppManager()
@@ -62,6 +63,21 @@ onBeforeMount(async () => {
 watch(wallpaper, async () => {
   initializeBg()
 })
+
+const menus = [
+  {
+    text: '🔄 刷新',
+    func: () => {
+      location.reload()
+    },
+  },
+  {
+    text: '🖼️ 切换壁纸',
+    func: () => {
+      store.commit(SWITCH_WALLPAPER)
+    },
+  },
+]
 </script>
 
 <style scoped lang="scss">
