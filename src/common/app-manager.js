@@ -28,7 +28,7 @@ export function useAppManager() {
             [ACTIVE_APP]: store.state.apps[[ACTIVE_APP]],
         }
         const key = serializeRouteKey(config)
-        await router.push({
+        await router.replace({
             name: 'desktop',
             query: {
                 [appStateKey]: key,
