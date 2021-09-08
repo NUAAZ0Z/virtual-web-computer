@@ -30,3 +30,8 @@
   text-overflow: ellipsis;
   overflow: hidden;
 }
+
+@mixin blur-bg($color: #C2E9FB, $opacity: 0.4) {
+  backdrop-filter: blur(4px);
+  background-color: rgba($color, $opacity);
+}

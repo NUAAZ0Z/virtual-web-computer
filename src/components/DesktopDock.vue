@@ -89,8 +89,7 @@ const isMobile = deviceInfo.platform.type === 'mobile'
     bottom: 0;
     right: 0;
     left: 0;
-    backdrop-filter: blur(8px);
-    background-color: rgba(#c2e9fb, .3);
+    @include blur-bg();
     border-radius: $dock-border-radius;
     margin: -$dock-margin * 0.3333;
     z-index: -1;

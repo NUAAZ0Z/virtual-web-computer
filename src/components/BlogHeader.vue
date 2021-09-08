@@ -21,13 +21,18 @@ const title = ref('📚 标题')
 @import "../assets/style/mixin";
 
 .blog-header {
-  height: 40vh;
+  height: 25rem;
   width: 100%;
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
   @include gen-flex(row, center, center);
   color: white;
+  transition: all ease-out .3s;
+
+  @include media('<=tablet') {
+    height: 20rem;
+  }
 
   .title-box {
     text-shadow: 0 0 4px #1c1f21;

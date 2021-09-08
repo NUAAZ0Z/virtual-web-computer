@@ -59,11 +59,6 @@ const { show, shadow } = toRefs(props)
 
 $height: 48px;
 
-a {
-  text-decoration: none;
-  color: $black-text-color;
-}
-
 @keyframes blog-navbar-in {
   0% {
     top: -$height;
@@ -83,12 +78,20 @@ a {
   height: $height;
   transition: all ease-out .5s;
   font-size: 1rem;
-  color: black;
-  background-color: white;
   padding: 0 $height * 0.5;
   border-radius: $height;
   box-shadow: none;
   animation: blog-navbar-in ease-out .5s;
+  color: white;
+  text-shadow: 0 0 3px $text-shadow-color;
+
+  &::before {
+    @include gen-absolute(0, 0, 0, 0);
+    @include blur-bg();
+    border-radius: $height;
+    //margin: -3.9996px;
+    z-index: -1;
+  }
 
   @include media('<desktop', '>=tablet') {
     width: 720px;
