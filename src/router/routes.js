@@ -1,19 +1,20 @@
 import Desktop from '../views/Desktop.vue'
 import Blog from '../views/Blog.vue'
+import { ROUTE_BLOG, ROUTE_DESKTOP } from './route.name'
 
-export default [
+export const routes = [
     {
         path: '/',
         redirect: '/desktop',
     },
     {
         path: '/desktop',
-        name: 'desktop',
+        name: ROUTE_DESKTOP,
         component: Desktop,
     },
     {
         path: '/blog',
-        name: 'blog',
+        name: ROUTE_BLOG,
         component: Blog,
     },
 ]

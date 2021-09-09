@@ -3,27 +3,27 @@
     <div class="navbar-detail">
       <ul class="nav-list">
         <li class="nav-item">
-          <router-link to="blog" class="navbar-brand">
+          <router-link :to="ROUTE_BLOG" class="navbar-brand">
             🏠首页
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link to="desktop">
+          <router-link :to="ROUTE_DESKTOP">
             🖥️桌面
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link to="blog">
+          <router-link :to="ROUTE_BLOG">
             📂归档
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link to="blog">
+          <router-link :to="ROUTE_BLOG">
             📓分类
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link to="blog">
+          <router-link :to="ROUTE_BLOG">
             👒关于
           </router-link>
         </li>
@@ -37,6 +37,7 @@
 
 <script setup>
 import { toRefs } from 'vue'
+import { ROUTE_BLOG, ROUTE_DESKTOP } from '../router/route.name'
 
 const props = defineProps({
   show: {
