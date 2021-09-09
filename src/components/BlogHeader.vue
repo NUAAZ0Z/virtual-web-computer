@@ -58,6 +58,7 @@ const menus = [
 
   .title-box {
     text-shadow: 0 0 4px #1c1f21;
+    animation: fadeInUp ease-out .5s;
   }
 }
 </style>

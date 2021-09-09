@@ -1,14 +1,15 @@
+@import "vue-transition";
+@import "animation";
+@import url('//fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&family=Noto+Serif+SC:wght@400;700&display=swap');
+//@import url("//fonts.googleapis.com/css?family=Fira+Mono|Noto+Serif+SC&display=swap");
+@import url("//at.alicdn.com/t/font_1656184_vbvakoyzibe.css");
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: Fira Mono, "Noto Serif SC", -apple-system, Roboto, Helvetica Neue, sans-serif;
+  font-family: "Noto Serif SC", -apple-system, Roboto, Helvetica Neue, sans-serif;
 }
-
-@import "vue-transition";
-@import url('//fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&family=Noto+Serif+SC:wght@400;700&display=swap');
-//@import url("//fonts.googleapis.com/css?family=Fira+Mono|Noto+Serif+SC&display=swap");
-@import url("//at.alicdn.com/t/font_1656184_vbvakoyzibe.css");
 
 ol,
 ul {
