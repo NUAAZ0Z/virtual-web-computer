@@ -28,10 +28,24 @@
           </router-link>
         </li>
       </ul>
-      <ul class="nav-tools">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <i class="iconfont icon-moon"></i>
+        </li>
       </ul>
     </div>
-    <div class="navbar-brief"></div>
+    <div class="navbar-brief">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <i class="iconfont icon-apps"></i>
+        </li>
+      </ul>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <i class="iconfont icon-moon"></i>
+        </li>
+      </ul>
+    </div>
   </nav>
 </template>
 
@@ -79,7 +93,7 @@ $height: 48px;
   height: $height;
   transition: all ease-out .5s;
   font-size: 1rem;
-  padding: 0 $height * 0.5;
+  padding: 0 $height * 0.25;
   border-radius: $height;
   box-shadow: none;
   animation: blog-navbar-in ease-out .5s;
@@ -143,7 +157,8 @@ $height: 48px;
 
     .nav-item {
       display: inline-block;
-      margin: 0 12px;
+      padding: 0 12px;
+      cursor: pointer;
     }
   }
 }
