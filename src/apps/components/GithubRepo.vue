@@ -1,6 +1,6 @@
 <template>
   <Window class="github-repo" :config="config">
-    <div class="header">
+    <div class="window-content-header">
       <ul class="left-options">
         <li v-show="showBackButton" class="icon-button" @click="backToParent">
           <i class="iconfont icon-arrow-left"></i>
@@ -118,9 +118,9 @@ const fetchContents = async () => {
       if (isImage(f.name)) {
         images.push('https://ghproxy.com/' + f.download_url)
         imageIndex++
-        return {...f, imageIndex}
+        return { ...f, imageIndex }
       }
-      return {...f}
+      return { ...f }
     })
   } else {
     // 加载数据失败
@@ -131,7 +131,7 @@ const fetchContents = async () => {
 
 watch([owner, repo, path], () => {
       fetchContents()
-    }, {flush: 'post'},
+    }, { flush: 'post' },
     // flush = 'post' 同一个方法里同时改变监听源，监听器只会执行一次
 )
 
@@ -185,56 +185,6 @@ $header-height: 42px;
     position: relative;
   }
 
-  $button-margin: 4px;
-  $button-size: $header-height - $button-margin * 2;
-
-  .icon-button,
-  .icon-no-hover {
-    display: inline-block;
-    width: $button-size;
-    height: $button-size;
-    text-align: center;
-    margin: $button-margin;
-    border-radius: $button-size;
-    line-height: $button-size;
-  }
-
-  .icon-button:hover {
-    background-color: rgba(black, 0.1);
-  }
-
-  .header {
-    height: $header-height;
-    background-color: white;
-    font-size: 16px;
-    font-weight: bold;
-    line-height: $header-height;
-    position: relative;
-    text-align: center;
-
-    .left-options,
-    .right-options {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-    }
-
-    .repo-name {
-      width: 100%;
-      text-align: center;
-      display: inline-block;
-      @include single-line-ellipsis();
-      padding: 0 $header-height*2;
-    }
-
-    .left-options {
-      left: 0;
-    }
-
-    .right-options {
-      right: 0;
-    }
-  }
 
   $spacing: 8px;
 
@@ -282,13 +232,7 @@ $header-height: 42px;
           word-break: break-word;
 
           .file-icon {
-            width: $button-size * 2;
-            height: $button-size * 2;
-
-            .iconfont {
-              font-size: 32px !important;
-              line-height: $button-size * 2;
-            }
+            @include circle-icon(68px, 32px);
           }
 
           .file-info {

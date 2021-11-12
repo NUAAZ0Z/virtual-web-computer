@@ -1,0 +1,54 @@
+@import "mixin";
+
+
+.window-content-header {
+  $header-height: 42px;
+  width: 100%;
+
+  height: $header-height;
+  background-color: white;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: $header-height;
+  position: relative;
+  text-align: center;
+
+  .left-options,
+  .right-options {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+  }
+
+  .repo-name {
+    width: 100%;
+    text-align: center;
+    display: inline-block;
+    @include single-line-ellipsis();
+    padding: 0 $header-height*2;
+  }
+
+  .left-options {
+    left: 0;
+  }
+
+  .right-options {
+    right: 0;
+  }
+}
+
+
+.icon-button,
+.icon-no-hover {
+  $button-size: 34px;
+  $button-margin: 4px;
+  display: inline-block;
+  text-align: center;
+  margin: $button-margin;
+  @include circle-icon($button-size, $button-size * 0.5);
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  background-color: rgba(black, 0.1);
+}

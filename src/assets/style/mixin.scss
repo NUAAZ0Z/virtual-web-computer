@@ -35,3 +35,19 @@
   backdrop-filter: blur(4px);
   background-color: rgba($color, $opacity);
 }
+
+@mixin circle-icon($size, $font-size) {
+  height: $size;
+  width: $size;
+  border-radius: $size;
+  line-height: $size;
+  font-size: $font-size !important;
+
+  &:hover {
+    background-color: rgba(black, .1);
+  }
+
+  .iconfont {
+    font-size: $font-size !important;
+  }
+}
