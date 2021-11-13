@@ -1,6 +1,7 @@
 import Axios from 'axios'
 
 const srsApiHost = 'srs-api.sudocs.com'
+const srsHookHost = 'srs-hooks.sudocs.com'
 const http = Axios.create({})
 
 const publishUrl = `//${srsApiHost}/rtc/v1/publish/`
@@ -15,7 +16,7 @@ const requestLiveSession = async (url, liveApp, liveStream, offer) => {
         clientip: null,
         sdp: offer.sdp,
     }
-    const { data: session } = await http.post(publishUrl, data)
+    const { data: session } = await http.post(url, data)
     return session
 }
 
@@ -71,11 +72,11 @@ export const createPublisher = (liveApp, liveStream) => {
 }
 
 
-export const createPlayer = async (liveApp, liveStream) => {
+export const createPlayer = (liveApp, liveStream) => {
 
     const self = {}
     const playUrl = `//${srsApiHost}/rtc/v1/play/`
-
+    let sessionId = null
 
     self.play = async () => {
         self.pc = new RTCPeerConnection()
@@ -93,18 +94,30 @@ export const createPlayer = async (liveApp, liveStream) => {
         const session = await requestLiveSession(playUrl, liveApp, liveStream, offer)
 
         if (session) {
-            console.log(session)
             await self.pc.setRemoteDescription(new RTCSessionDescription({
                 type: 'answer',
                 sdp: session.sdp,
             }))
+            sessionId = session.sessionid
         }
+    }
+
+    self.drop = async () => {
+        await http.get(`${nackUrl}?drop=1&username=${sessionId}`)
+        self.pc.close()
+        self.pc = null
+        self.stream.getTracks().forEach(track => {
+            track.stop()
+        })
     }
     return self
 }
 
 export const srsApi = {
-    fetchStreams: async () => {
+    fetchLives: async () => {
         return await http.get(`//${srsApiHost}/api/v1/streams/`)
+    },
+    fetchHistories: async () => {
+        return await http.get(`//${srsHookHost}/v1/dvr`)
     },
 }

@@ -308,6 +308,7 @@ const onMouseOrTouchUp = () => {
   flex-direction: row;
   align-items: center;
   text-shadow: 0 0 1px black;
+  flex: 0 0 $window-title-height;
 
   &-transparent {
     background: transparent !important;
@@ -379,5 +380,6 @@ const onMouseOrTouchUp = () => {
 .window-body {
   flex: 1;
   overflow: hidden;
+  height: 0;
 }
 </style>
