@@ -91,11 +91,11 @@
       <div class="config-live-path">
         <div class="input-block">
           <label for="liveApp"> App </label>
-          <input v-model="liveApp" name="liveApp" type="text" placeholder="live">
+          <input id="liveApp" v-model="liveApp" type="text" placeholder="live">
         </div>
         <div class="input-block">
           <label for="liveStream"> Stream </label>
-          <input v-model="liveStream" name="liveStream" type="text" placeholder="webrtc">
+          <input id="liveStream" v-model="liveStream" type="text" placeholder="webrtc">
         </div>
       </div>
       <div class="save-config">
@@ -111,8 +111,8 @@
 import Window from '../../components/Window.vue'
 import WindowModal from '../../components/WindowModal.vue'
 import DefaultTip from '../../components/DefaultTip.vue'
-import { onMounted, reactive, ref, watch } from 'vue'
-import { createPlayer, createPublisher, srsApi } from '../../common/srs'
+import { onBeforeUnmount, reactive, ref, watch } from 'vue'
+import { createRtcPlayer, createRtcPublisher, srsApi } from '../../common/srs'
 
 const CHOOSE_SCENE = 1
 const PUBLISH_SCENE = 1 << 1
@@ -153,42 +153,52 @@ const liveStream = ref('webrtc')
 
 const videoWatching = ref(null)
 
-let publisher = null
-let player = null
+let rtcPublisher = null
+let rtcPlayer = null
+// let flvPlayer = null
+
+onBeforeUnmount(() => {
+  rtcPublisher && rtcPublisher.drop()
+  rtcPlayer && rtcPlayer.drop()
+})
 
 const onSettingConfirm = async () => {
   showSettingModal.value = false
 }
 
 const gotoChooseScene = async () => {
-  publisher && publisher.drop()
-  publisher = null
+  rtcPublisher && rtcPublisher.drop()
+  rtcPublisher = null
   scene.value = CHOOSE_SCENE
 }
 
-const startOrStopPublish = () => {
+const startPublish = async () => {
+  rtcPublisher = createRtcPublisher('live', 'webrtc')
+  await rtcPublisher.publish(liveConstraints)
+
+  // 当流终止时
+  rtcPublisher.stream.getTracks().forEach(track => {
+    track.onended = stopPublish
+  })
+
+  videoPublisherEle.value.srcObject = rtcPublisher.stream
+
+  videoPublisherEle.value.play()
+}
+
+const stopPublish = () => {
+  rtcPublisher && rtcPublisher.drop()
+  rtcPublisher = null
+  videoPublisherEle.value.pause()
+  publishing.value = false
+}
+
+const startOrStopPublish = async () => {
   if (publishing.value) {
-    publisher.drop()
-    publisher = null
-    videoPublisherEle.value.pause()
+    stopPublish()
     publishing.value = false
   } else {
-    publisher = createPublisher('live', 'webrtc')
-    const constraints = {}
-    Object.assign(constraints, liveConstraints)
-    if (liveConstraints.video) {
-      constraints.video = {}
-      const videoElStyle = window.getComputedStyle(videoPublisherEle.value)
-      constraints.video = {
-        height: parseInt(videoElStyle['height']),
-        width: parseInt(videoElStyle['width']),
-      }
-    }
-    publisher.publish(constraints)
-
-    videoPublisherEle.value.srcObject = publisher.stream
-
-    videoPublisherEle.value.play()
+    await startPublish()
     publishing.value = true
   }
 }
@@ -227,11 +237,12 @@ const playOrPauseVideo = async () => {
 const hideVideoPlayer = () => {
   const { app, name, url } = videoWatching.value
   if (!url) {
-    player && player.drop()
-    player = null
+    // 观看的是直播
+    rtcPlayer && rtcPlayer.drop()
+    rtcPlayer = null
+    videoPlayerEle.value.pause()
   }
   scene.value = PLAYLIST_SCENE
-  videoPlayerEle.value.pause()
 }
 
 watch(scene, (newVal) => {
@@ -248,10 +259,10 @@ watch(scene, (newVal) => {
       if (url) {
         videoPlayerEle.value.src = url
       } else {
-        player = createPlayer(app, name);
+        rtcPlayer = createRtcPlayer(app, name);
         (async () => {
-          await player.play()
-          videoPlayerEle.value.srcObject = player.stream
+          await rtcPlayer.play()
+          videoPlayerEle.value.srcObject = rtcPlayer.stream
         })()
       }
       videoPlayerEle.value.play()
@@ -329,6 +340,7 @@ watch(scene, (newVal) => {
     flex: 1;
     background-color: rgba(black, .1);
     object-fit: fill;
+    height: 0;
   }
 }
 
