@@ -85,11 +85,11 @@
       <div class="config-checkboxes">
         <label>
           <input v-model="liveConstraints.audio" type="checkbox">
-          录制音频
+          🎙️ 录制音频
         </label>
         <label>
           <input v-model="liveConstraints.video" type="checkbox">
-          录制视频
+          📺 录制视频
         </label>
       </div>
       <div class="config-live-path">
@@ -364,8 +364,9 @@ watch(scene, (newVal) => {
   video {
     flex: 1;
     background-color: rgba(black, .1);
-    object-fit: fill;
+    object-fit: contain;
     height: 0;
+    max-width: 100%;
   }
 }
 
@@ -450,18 +451,10 @@ watch(scene, (newVal) => {
   background-color: white;
 
   video {
-    height: auto !important;
-    width: 100% !important;
-    object-fit: fill;
+    height: 0;
+    object-fit: contain;
     flex: 1 auto;
-  }
-
-  @include media('>=desktop') {
-    video {
-      height: auto !important;
-      width: 80% !important;
-      object-fit: fill;
-    }
+    max-width: 100%;
   }
 }
 

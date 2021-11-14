@@ -36,8 +36,8 @@ export const createRtcPublisher = (liveApp, liveStream) => {
         self.pc.addTransceiver('audio', { direction: 'sendonly' })
         self.pc.addTransceiver('video', { direction: 'sendonly' })
 
-        // const s = await navigator.mediaDevices.getUserMedia(constraints)
-        const s = await navigator.mediaDevices.getDisplayMedia(constraints)
+        const s = await navigator.mediaDevices.getUserMedia(constraints)
+        // const s = await navigator.mediaDevices.getDisplayMedia(constraints)
 
         s.getTracks().forEach((track) => {
             self.pc.addTrack(track)
