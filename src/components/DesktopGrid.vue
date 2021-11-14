@@ -1,10 +1,11 @@
 <template>
   <div class="desktop-grid">
-    <div v-for="app in appAtDesktop"
-         :key="app.name"
-         class="desktop-entry"
-         @click="onEntryClicked(app)"
-         @dblclick="mountApp(app)"
+    <div
+      v-for="app in appAtDesktop"
+      :key="app.name"
+      class="desktop-entry"
+      @click="onEntryClicked(app)"
+      @dblclick="mountApp(app)"
     >
       <img class="icon" :src="'/icons/apps/' + app.icon" alt="图标">
       <div class="label">

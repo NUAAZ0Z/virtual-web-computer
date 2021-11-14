@@ -1,6 +1,7 @@
 <template>
-  <div v-for="app in apps" :key="app.name"
-       class="dock-entry" @click.stop="mountApp(app)"
+  <div 
+    v-for="app in apps" :key="app.name"
+    class="dock-entry" @click.stop="mountApp(app)"
   >
     <img :src="'/icons/apps/' + app.icon" alt="图标">
     <div class="dock-tooltip">

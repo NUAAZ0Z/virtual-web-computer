@@ -1,6 +1,7 @@
 <template>
-  <header class="blog-header" :style="{'backgroundImage': 'url(' + wallpaper + ')'}"
-          @contextmenu.prevent @mouseup.right="onRightMouseUp" @mouseup.left="showRightClickWidget=false"
+  <header
+    class="blog-header" :style="{'backgroundImage': 'url(' + wallpaper + ')'}"
+    @contextmenu.prevent @mouseup.right="onRightMouseUp" @mouseup.left="showRightClickWidget=false"
   >
     <div class="title-box">
       <h1>{{ title }}</h1>

@@ -53,8 +53,9 @@
               历史点播
             </div>
             <div class="video-list">
-              <div v-for="stream in historyStreams" :key="stream.url" class="video-item"
-                   @click="setVideoToPlay(stream)"
+              <div
+                v-for="stream in historyStreams" :key="stream.url" class="video-item" 
+                @click="setVideoToPlay(stream)"
               >
                 <div>{{ stream.app }}/{{ stream.stream }}</div>
                 <div>{{ stream.url.split('/').slice(-2).join('/') }}</div>

@@ -1,14 +1,16 @@
 <template>
-  <div class="window" :style="windowStyle" :class="[windowStatusClass,windowDraggedClass]"
-       @click.stop="onWindowClicked" @mouseup.right.stop
+  <div
+    class="window" :style="windowStyle" :class="[windowStatusClass,windowDraggedClass]"
+    @click.stop="onWindowClicked" @mouseup.right.stop
   >
     <div class="window-title-bar" :class="{'window-title-bar-transparent': config.transparentTitleBar}">
       <img class="icon" :src="'/icons/apps/' + config.icon" alt="" />
       <div class="title">
         <span>{{ config.title }}</span>
       </div>
-      <div class="drag-area" @mousedown="onMouseOrTouchDown" @mouseup="onMouseOrTouchUp"
-           @touchstart="onMouseOrTouchDown" @touchend="onMouseOrTouchUp"
+      <div
+        class="drag-area" @mousedown="onMouseOrTouchDown" @mouseup="onMouseOrTouchUp"
+        @touchstart="onMouseOrTouchDown" @touchend="onMouseOrTouchUp"
       />
       <div class="switch">
         <div v-if="config.enableMenu" class="menu">
@@ -17,13 +19,15 @@
         <div v-if="!config.disableMinimize" class="minimize" @click.stop="minimizeWindow">
           <i class="iconfont icon-minimize"></i>
         </div>
-        <div v-if="windowStatus===WINDOW_NORMAL && config.enableMaximize" class="maximize"
-             @click.stop="maximizeWindow"
+        <div
+          v-if="windowStatus===WINDOW_NORMAL && config.enableMaximize" class="maximize"
+          @click.stop="maximizeWindow"
         >
           <i class="iconfont icon-maximize"></i>
         </div>
-        <div v-if="windowStatus===WINDOW_MAXIMIZED && config.enableMaximize" class="un-maximize"
-             @click.stop="unMaximizeWindow"
+        <div
+          v-if="windowStatus===WINDOW_MAXIMIZED && config.enableMaximize" class="un-maximize"
+          @click.stop="unMaximizeWindow"
         >
           <i class="iconfont icon-unmaximize"></i>
         </div>
