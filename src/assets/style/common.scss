@@ -52,3 +52,37 @@
 .icon-button:hover {
   background-color: rgba(black, 0.1);
 }
+
+input[type='checkbox'], input[type='radio'] {
+  visibility: collapse;
+  position: relative;
+
+  &:before {
+    visibility: visible;
+    @include gen-absolute(-2px, -2px, -2px, -2px);
+    border: 2px solid rgba(blue, .7);
+  }
+
+  &:checked:after {
+    visibility: visible;
+    @include gen-absolute(0, 0, 0, 0);
+    width: 60%;
+    height: 60%;
+    margin: auto;
+    background-color: rgba(blue, .4);
+  }
+}
+
+input[type='radio'] {
+  &:before {
+    border-radius: 50%;
+  }
+
+  &:after {
+    border-radius: 50%;
+  }
+}
+
+input[disabled] {
+  filter: grayscale(1);
+}

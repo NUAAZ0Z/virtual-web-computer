@@ -83,7 +83,17 @@
     </div>
 
     <WindowModal v-model:show-modal="showSettingModal" title="直播设置">
-      <div class="config-checkboxes">
+      <div class="config-selection">
+        <label>
+          <input v-model="videoSource" type="radio" value="camera" name="videoSource" checked>
+          摄像头
+        </label>
+        <label>
+          <input v-model="videoSource" type="radio" value="screen" name="videoSource" :disabled="!notDesktop">
+          屏幕
+        </label>
+      </div>
+      <div class="config-selection">
         <label>
           <input v-model="liveConstraints.audio" type="checkbox">
           🎙️ 录制音频
@@ -116,7 +126,7 @@
 import Window from '../../components/Window.vue'
 import WindowModal from '../../components/WindowModal.vue'
 import DefaultTip from '../../components/DefaultTip.vue'
-import { onBeforeUnmount, reactive, ref, watch } from 'vue'
+import { inject, onBeforeUnmount, reactive, ref, watch } from 'vue'
 import { createRtcPlayer, createRtcPublisher, srsApi } from '../../common/srs'
 
 const CHOOSE_SCENE = 1
@@ -133,6 +143,9 @@ const title = {
 defineProps({
   config: Object,
 })
+const deviceInfo = inject('deviceInfo')
+
+const notDesktop = deviceInfo.platform.type === 'desktop'
 
 const fullscreen = ref(false)
 // 绑定video元素
@@ -152,6 +165,7 @@ const liveConstraints = reactive({
   audio: true,
   video: true,
 })
+const videoSource = ref('camera')
 const liveStreams = ref([])
 const historyStreams = ref([])
 
@@ -180,7 +194,7 @@ const gotoChooseScene = async () => {
 }
 
 const startPublish = async () => {
-  rtcPublisher = createRtcPublisher('live', 'webrtc')
+  rtcPublisher = createRtcPublisher('live', 'webrtc', videoSource.value)
   await rtcPublisher.publish(liveConstraints)
 
   // 当流终止时
@@ -242,7 +256,7 @@ const playOrPauseVideo = async () => {
 }
 
 const hideVideoPlayer = () => {
-  const { app, name, url } = videoWatching.value
+  const { url } = videoWatching.value
   if (!url) {
     // 观看的是直播
     rtcPlayer && rtcPlayer.drop()
@@ -459,9 +473,14 @@ watch(scene, (newVal) => {
   }
 }
 
-.config-checkboxes {
+.config-selection {
   padding: 12px;
   text-align: center;
+
+  input, label {
+    cursor: pointer;
+    vertical-align: center;
+  }
 }
 
 .config-live-path {
@@ -469,7 +488,7 @@ watch(scene, (newVal) => {
 
   .input-block {
     text-align: center;
-    width: 320px;
+    width: 240px;
     margin: 12px auto 0;
     display: flex;
     flex-direction: row;
@@ -484,7 +503,7 @@ watch(scene, (newVal) => {
     text-align: right;
     width: 80px;
     display: inline-block;
-    background-color: #0081FF;
+    background: radial-gradient(circle, rgba(blue, .7), rgba(blue, .5));
     border-bottom-left-radius: 16px;
     border-top-left-radius: 16px;
     color: white;
@@ -493,6 +512,7 @@ watch(scene, (newVal) => {
 
   input {
     flex: 1 auto;
+    width: 0;
     vertical-align: top;
     height: 32px;
     border-bottom-right-radius: 16px;
@@ -513,7 +533,8 @@ watch(scene, (newVal) => {
     height: 36px;
     border: none;
     border-radius: 18px;
-    background-color: wheat;
+    color: white;
+    background: radial-gradient(circle, rgba(purple, .7), rgba(purple, .5));
 
     &:active {
       border: 2px rgb(118, 118, 118) solid;

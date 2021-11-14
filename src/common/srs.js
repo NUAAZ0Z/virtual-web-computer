@@ -20,7 +20,7 @@ const requestLiveSession = async (url, liveApp, liveStream, offer) => {
     return session
 }
 
-export const createRtcPublisher = (liveApp, liveStream) => {
+export const createRtcPublisher = (liveApp, liveStream, videoSource) => {
     const self = {}
 
     const publishUrl = `//${srsApiHost}/rtc/v1/publish/`
@@ -36,8 +36,12 @@ export const createRtcPublisher = (liveApp, liveStream) => {
         self.pc.addTransceiver('audio', { direction: 'sendonly' })
         self.pc.addTransceiver('video', { direction: 'sendonly' })
 
-        const s = await navigator.mediaDevices.getUserMedia(constraints)
-        // const s = await navigator.mediaDevices.getDisplayMedia(constraints)
+        let s
+        if (videoSource === 'camera') {
+            s = await navigator.mediaDevices.getUserMedia(constraints)
+        } else {
+            s = await navigator.mediaDevices.getDisplayMedia(constraints)
+        }
 
         s.getTracks().forEach((track) => {
             self.pc.addTrack(track)
