@@ -11,13 +11,13 @@
       <div class="dock-divider" />
       <div class="dock-time dock-entry">
         <span>
-          {{ date.getHours().toString().padStart(2, '0') }}:{{ date.getMinutes().toString().padStart(2, '0') }}
+          {{ dateInfo.hourAndMinute }}
         </span>
         <span>
-          {{ date.toLocaleDateString() }}
+          {{ dateInfo.localeDateString }}
         </span>
         <div class="dock-tooltip">
-          {{ date.toLocaleString() }}
+          {{ dateInfo.localeString }}
         </div>
       </div>
       <DockEntryArea :apps="appAtDockTray" />
@@ -34,10 +34,20 @@ import DockEntryArea from './DockEntryArea.vue'
 const date = ref(new Date())
 let timer
 
+const dateInfo = computed(() => {
+      const d = date.value
+      return {
+        hourAndMinute: d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0'),
+        localeDateString: d.toLocaleDateString(),
+        localeString: d.toLocaleString(),
+      }
+    },
+)
+
 onMounted(() => {
   timer = setInterval(() => {
     date.value = new Date()
-  })
+  }, 1000)
 })
 
 onUnmounted(() => {

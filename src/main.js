@@ -9,5 +9,6 @@ import 'viewerjs/dist/viewer.css'
 import './assets/style/app.scss'
 
 const app = createApp(App).use(store).use(router).use(viewer)
+app.config.performance = true
 
 app.mount('#app')

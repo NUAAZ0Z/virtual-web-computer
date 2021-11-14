@@ -54,7 +54,7 @@
             </div>
             <div class="video-list">
               <div
-                v-for="stream in historyStreams" :key="stream.url" class="video-item" 
+                v-for="stream in historyStreams" :key="stream.url" class="video-item"
                 @click="setVideoToPlay(stream)"
               >
                 <div>{{ stream.app }}/{{ stream.stream }}</div>
