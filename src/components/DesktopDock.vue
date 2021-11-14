@@ -74,7 +74,7 @@ const deviceInfo = inject('deviceInfo')
   height: $dock-height;
   border-radius: $dock-border-radius;
   animation: dock-in .8s ease-out;
-  z-index: 999999;
+  z-index: 9999;
 
   @include media('<tablet') {
     // Dock在手机端被窗口覆盖，其他类型设备上Dock常显，Dock的z-index高于Window

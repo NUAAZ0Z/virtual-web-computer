@@ -1,5 +1,5 @@
 <template>
-  <Window class="live" :config="config">
+  <Window class="live" :config="config" :class="fullscreen ? 'live-fullscreen':''">
     <div class="window-content-header">
       <ul v-show="scene!==CHOOSE_SCENE" class="left-options">
         <li class="icon-button" @click="gotoChooseScene">
@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="window-content-main">
-      <transition name="fade">
+      <transition name="fade" duration="200">
         <div v-if="scene===CHOOSE_SCENE" class="choose-scene">
           <div class="scene-choice" @click="scene=PUBLISH_SCENE">
             <span>直播推流</span>
@@ -30,7 +30,7 @@
             <li class="control-item play-or-pause" title="开始/停止" @click="startOrStopPublish">
               <i class="iconfont" :class="publishing ? 'icon-pause':'icon-play'"></i>
             </li>
-            <li class="control-item" title="网页全屏">
+            <li class="control-item" title="网页全屏" @click="toggleFullscreen">
               <i class="iconfont icon-expand-arrows-alt"></i>
             </li>
           </ul>
@@ -38,7 +38,9 @@
 
         <div v-else class="playlist-scene">
           <div v-if="liveStreams.length!==0" class="playlist">
-            <div class="title">正在直播</div>
+            <div class="title">
+              正在直播
+            </div>
             <div class="video-list">
               <div v-for="stream in liveStreams" :key="stream.id" class="video-item" @click="setVideoToPlay(stream)">
                 <div>{{ stream.app }}/{{ stream.name }}</div>
@@ -47,7 +49,9 @@
             </div>
           </div>
           <div v-if="historyStreams.length!==0" class="playlist">
-            <div class="title">历史点播</div>
+            <div class="title">
+              历史点播
+            </div>
             <div class="video-list">
               <div v-for="stream in historyStreams" :key="stream.url" class="video-item"
                    @click="setVideoToPlay(stream)"
@@ -71,7 +75,7 @@
         <li class="control-item play-or-pause" title="开始/停止" @click="playOrPauseVideo">
           <i class="iconfont" :class="playing ? 'icon-pause':'icon-play'"></i>
         </li>
-        <li class="control-item" title="网页全屏">
+        <li class="control-item" title="网页全屏" @click="toggleFullscreen">
           <i class="iconfont icon-expand-arrows-alt"></i>
         </li>
       </ul>
@@ -128,6 +132,8 @@ const title = {
 defineProps({
   config: Object,
 })
+
+const fullscreen = ref(false)
 // 绑定video元素
 const videoPublisherEle = ref(null)
 const videoPlayerEle = ref(null)
@@ -245,6 +251,10 @@ const hideVideoPlayer = () => {
   scene.value = PLAYLIST_SCENE
 }
 
+const toggleFullscreen = () => {
+  fullscreen.value = !fullscreen.value
+}
+
 watch(scene, (newVal) => {
   const s = newVal.valueOf()
   switch (s) {
@@ -287,6 +297,21 @@ watch(scene, (newVal) => {
   justify-content: center;
   align-items: center;
   position: relative;
+}
+
+.live {
+  &-fullscreen {
+    ::v-deep(.window-body) {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      content: ' ';
+      z-index: 10000;
+      background-color: whitesmoke;
+    }
+  }
 }
 
 .window-content-main {
