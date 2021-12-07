@@ -194,7 +194,7 @@ const gotoChooseScene = async () => {
 }
 
 const startPublish = async () => {
-  rtcPublisher = createRtcPublisher('live', 'webrtc', videoSource.value)
+  rtcPublisher = createRtcPublisher(liveApp.value, liveStream.value, videoSource.value)
   await rtcPublisher.publish(liveConstraints)
 
   // 当流终止时
