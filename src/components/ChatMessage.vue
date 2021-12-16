@@ -2,10 +2,10 @@
   <div>
     <div v-if="type==='chat'" class="chat-dialog">
       <div v-if="left" class="avatar-left">
-        {{ from.toString().substr(6, 2) }}
+        {{ from.toString().substr(0, 2) }}
       </div>
       <div class="msg-box" :class="{'msg-right':!left,'msg-left':left}">
-        <span class="msg-from">{{ from.toString().substr(6) }}</span>
+        <span class="msg-from">{{ from }}</span>
         <div class="msg-content">
           <p>
             {{ msg }}
@@ -13,7 +13,7 @@
         </div>
       </div>
       <div v-if="!left" class="avatar-right">
-        {{ from.toString().substr(6, 2) }}
+        {{ from.toString().substr(0, 2) }}
       </div>
     </div>
     <div v-else>
