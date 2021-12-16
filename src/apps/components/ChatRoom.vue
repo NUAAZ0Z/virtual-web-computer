@@ -24,14 +24,14 @@
         </div>
         <div class="chat-message">
           <ChatMessage
-              v-for="message in chatMessages" :key="message._id" :from="message.sender"
-              :msg="message.content" :type="message.type || 'chat'" :left="userSessionId!==message.sender"
+            v-for="message in chatMessages" :key="message._id" :from="message.sender"
+            :msg="message.content" :type="message.type || 'chat'" :left="userSessionId!==message.sender"
           />
         </div>
         <div class="chat-editor">
           <textarea
-              v-model="inputMsg" placeholder="Alt + Enter 发送消息" aria-multiline="true"
-              @keyup.alt.enter="sendMsg"
+            v-model="inputMsg" placeholder="Alt + Enter 发送消息" aria-multiline="true"
+            @keyup.alt.enter="sendMsg"
           />
           <div class="send-btn" @click="sendMsg">
             发送
@@ -89,9 +89,9 @@ const onRoomClicked = room => {
 
 const onBackClicked = () => {
   chatActive.value = false
-
 }
 
+// 处理服务端向客户端发送的初始化信息
 const onSocketInit = (payload) => {
   console.log(payload)
   const { rooms, sessionId } = payload
@@ -104,6 +104,7 @@ const onSocketInit = (payload) => {
   }
 }
 
+// 处理一般群聊消息
 const onSocketMessage = (payload) => {
   console.log(payload)
   const { roomId, type, content, sender, sendAt, _id } = payload
@@ -121,6 +122,7 @@ const onSocketMessage = (payload) => {
   }
 }
 
+// 处理消息历史拉取结果
 const onMessageFetchResult = (payload) => {
   const { roomId, messages } = payload
   console.log(payload)
@@ -140,10 +142,7 @@ watch(chatMessages, () => {
   }, 200) // 延时不立即执行，待 DOM 更新之后
 })
 
-const onRoomCreateResult = (payload) => {
-  chatroomList.value = [payload, ...chatroomList.value]
-}
-
+// 发送群聊消息
 const sendMsg = () => {
   socket.emit('message:append', {
     roomId: currentRoom.id,
@@ -153,11 +152,17 @@ const sendMsg = () => {
   inputMsg.value = ''
 }
 
+// 创建房间
 const createRoom = () => {
   socket.emit('room:create', {
     name: inputRoomName.value,
   })
   inputRoomName.value = ''
+}
+
+// 处理房间创建成功的消息
+const onRoomCreateResult = (payload) => {
+  chatroomList.value = [payload, ...chatroomList.value]
 }
 
 onMounted(() => {
