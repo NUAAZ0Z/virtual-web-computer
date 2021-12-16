@@ -4,6 +4,7 @@ import GithubRepo from './github-repo'
 import IssueBlog from './issue-blog'
 import MusicBox from './music-box'
 import Live from './live'
+import Chatroom from './chatroom'
 import TrashBin from './trash-bin'
 
 const Apps = [
@@ -13,6 +14,7 @@ const Apps = [
     IssueBlog,
     MusicBox,
     Live,
+    Chatroom,
     TrashBin,
 ]
 
