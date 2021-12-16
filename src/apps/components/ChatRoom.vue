@@ -4,7 +4,9 @@
       <div class="group-contacts">
         <div class="create-group">
           <input v-model="inputRoomName" type="text" placeholder="请输入房间名称">
-          <button @click="createRoom">创建</button>
+          <button @click="createRoom">
+            创建
+          </button>
         </div>
         <div class="group-list">
           <span class="group-list-tip">群聊列表</span>
@@ -27,7 +29,10 @@
           />
         </div>
         <div class="chat-editor">
-          <textarea v-model="inputMsg" placeholder="Enter 发送消息，Alt+Enter 换行" aria-multiline="true" @keyup.enter="sendMsg" />
+          <textarea
+              v-model="inputMsg" placeholder="Alt + Enter 发送消息" aria-multiline="true"
+              @keyup.alt.enter="sendMsg"
+          />
           <div class="send-btn" @click="sendMsg">
             发送
           </div>
@@ -40,7 +45,7 @@
 <script setup>
 import Window from '../../components/Window.vue'
 import ChatMessage from '../../components/ChatMessage.vue'
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { createSocket, SESSION_ID_KEY } from '../../common/chatroom-socket'
 
 defineProps({
@@ -126,6 +131,14 @@ const onMessageFetchResult = (payload) => {
     }
   }
 }
+
+// 监听消息列表，当有新消息时跳到末尾
+watch(chatMessages, () => {
+  setTimeout(() => {
+    const container = document.querySelector('.chat-message')
+    container.scrollTop = container.scrollHeight
+  }, 200) // 延时不立即执行，待 DOM 更新之后
+})
 
 const onRoomCreateResult = (payload) => {
   chatroomList.value = [payload, ...chatroomList.value]
