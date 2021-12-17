@@ -15,7 +15,7 @@
           </div>
         </div>
       </div>
-      <div v-show="currentRoom.id" class="chat-content">
+      <div v-show="currentRoom.id && chatActive" class="chat-content">
         <div class="chat-title">
           <li class="icon-button go-back-btn" @click="onBackClicked">
             <i class="iconfont icon-arrow-left"></i>
@@ -30,8 +30,8 @@
         </div>
         <div class="chat-editor">
           <textarea
-            v-model="inputMsg" placeholder="Alt + Enter 发送消息" aria-multiline="true"
-            @keyup.alt.enter="sendMsg"
+            v-model="inputMsg" placeholder="在此输入...Enter 发送" aria-multiline="true"
+            @keyup.enter="sendMsg"
           />
           <div class="send-btn" @click="sendMsg">
             发送
@@ -127,9 +127,10 @@ const onMessageFetchResult = (payload) => {
   const { roomId, messages } = payload
   console.log(payload)
 
+  chatMessages.value = []
   if (roomId === currentRoom.id) {
     if (messages) {
-      chatMessages.value = [...messages]
+      chatMessages.value = messages
     }
   }
 }
@@ -140,24 +141,28 @@ watch(chatMessages, () => {
     const container = document.querySelector('.chat-message')
     container.scrollTop = container.scrollHeight
   }, 200) // 延时不立即执行，待 DOM 更新之后
-})
+}, { immediate: false })
 
 // 发送群聊消息
 const sendMsg = () => {
-  socket.emit('message:append', {
-    roomId: currentRoom.id,
-    content: inputMsg.value,
-    sessionId: userSessionId,
-  })
-  inputMsg.value = ''
+  if (inputMsg.value !== '') {
+    socket.emit('message:append', {
+      roomId: currentRoom.id,
+      content: inputMsg.value,
+      sessionId: userSessionId,
+    })
+    inputMsg.value = ''
+  }
 }
 
 // 创建房间
 const createRoom = () => {
-  socket.emit('room:create', {
-    name: inputRoomName.value,
-  })
-  inputRoomName.value = ''
+  if (inputRoomName.value !== '') {
+    socket.emit('room:create', {
+      name: inputRoomName.value,
+    })
+    inputRoomName.value = ''
+  }
 }
 
 // 处理房间创建成功的消息
@@ -322,7 +327,7 @@ $border: 1px solid rgba(black, .05);
   }
 }
 
-@include media('<tablet') {
+@include media('<desktop') {
   .chat-content-active {
     transform: translateX(-100%);
   }
