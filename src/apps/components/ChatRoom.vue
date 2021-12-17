@@ -20,18 +20,21 @@
           <li class="icon-button go-back-btn" @click="onBackClicked">
             <i class="iconfont icon-arrow-left"></i>
           </li>
-          <span class="room-name">{{ currentRoom.name }}</span>
+          <div class="chat-info">
+            <span class="room-name">{{ currentRoom.name }}</span>
+            <span class="online-count">&nbsp;[在线人数：{{ onlineCount }}]</span>
+          </div>
         </div>
         <div class="chat-message">
           <ChatMessage
-            v-for="message in chatMessages" :key="message._id" :from="message.sender"
-            :msg="message.content" :type="message.type || 'chat'" :left="userSessionId!==message.sender"
+              v-for="message in chatMessages" :key="message._id" :from="message.sender"
+              :msg="message.content" :type="message.type || 'chat'" :left="sessionId!==message.sender"
           />
         </div>
         <div class="chat-editor">
           <textarea
-            v-model="inputMsg" placeholder="在此输入...Enter 发送" aria-multiline="true"
-            @keyup.enter="sendMsg"
+              v-model="inputMsg" placeholder="在此输入...Enter 发送" aria-multiline="true"
+              @keyup.enter="sendMsg"
           />
           <div class="send-btn" @click="sendMsg">
             发送
@@ -45,7 +48,7 @@
 <script setup>
 import Window from '../../components/Window.vue'
 import ChatMessage from '../../components/ChatMessage.vue'
-import { onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { createSocket, SESSION_ID_KEY } from '../../common/chatroom-socket'
 
 defineProps({
@@ -53,12 +56,13 @@ defineProps({
 })
 
 let socket = null
-let userSessionId = localStorage.getItem(SESSION_ID_KEY)
+let sessionId = localStorage.getItem(SESSION_ID_KEY)
 const chatActive = ref(false)
 const chatroomList = ref([])
 const chatMessages = ref([])
 const inputMsg = ref('')
 const inputRoomName = ref('')
+const onlineCount = ref(0)
 
 // 当前房间
 const currentRoom = reactive({
@@ -71,13 +75,22 @@ const onRoomClicked = room => {
 
   const { _id: roomId, name } = room
   if (currentRoom.id !== roomId) {
+    // 离开原先房间
+    if (currentRoom.id) {
+      socket.emit('room:leave', {
+        roomId: currentRoom.id,
+        sessionId,
+      })
+    }
+
+    // 切换到新的房间
     currentRoom.id = roomId
     currentRoom.name = name
 
     // 加入房间，服务端进行广播
     socket.emit('room:join', {
       roomId,
-      sessionId: userSessionId,
+      sessionId,
     })
 
     // 拉取历史消息
@@ -89,15 +102,25 @@ const onRoomClicked = room => {
 
 const onBackClicked = () => {
   chatActive.value = false
+  // 离开房间
+  if (currentRoom.id) {
+    socket.emit('room:leave', {
+      roomId: currentRoom.id,
+      sessionId,
+    })
+  }
+  currentRoom.id = null
+  currentRoom.name = null
 }
 
 // 处理服务端向客户端发送的初始化信息
 const onSocketInit = (payload) => {
   console.log(payload)
-  const { rooms, sessionId } = payload
-  if (sessionId) {
-    localStorage.setItem(SESSION_ID_KEY, sessionId)
-    userSessionId = sessionId
+  // 设置为服务端返回的 sessionId 信息
+  const { rooms, sessionId: id } = payload
+  if (id) {
+    localStorage.setItem(SESSION_ID_KEY, id)
+    sessionId = id
   }
   if (rooms) {
     chatroomList.value = rooms
@@ -107,7 +130,7 @@ const onSocketInit = (payload) => {
 // 处理一般群聊消息
 const onSocketMessage = (payload) => {
   console.log(payload)
-  const { roomId, type, content, sender, sendAt, _id } = payload
+  const { roomId, type, content, sender, sendAt, _id, onlineCount: count } = payload
   if (roomId === currentRoom.id) {
     chatMessages.value = [
       ...chatMessages.value,
@@ -119,6 +142,14 @@ const onSocketMessage = (payload) => {
         sendAt,
       },
     ]
+
+    // 当是成员加入消息时，服务端会返回当前房间在线人数
+    if (type === 'join') {
+      onlineCount.value = count
+    } else if (type === 'leave') {
+      // 成员离开
+      onlineCount.value -= 1
+    }
   }
 }
 
@@ -149,7 +180,7 @@ const sendMsg = () => {
     socket.emit('message:append', {
       roomId: currentRoom.id,
       content: inputMsg.value,
-      sessionId: userSessionId,
+      sessionId,
     })
     inputMsg.value = ''
   }
@@ -176,6 +207,12 @@ onMounted(() => {
   socket.on('message', onSocketMessage)
   socket.on('message:fetch:result', onMessageFetchResult)
   socket.on('room:create:result', onRoomCreateResult)
+})
+
+onUnmounted(() => {
+  if (socket) {
+    socket.disconnect()
+  }
 })
 </script>
 
@@ -280,6 +317,10 @@ $border: 1px solid rgba(black, .05);
       .go-back-btn {
         display: none;
       }
+    }
+
+    .online-count {
+      font-size: 14px;
     }
 
     .chat-message {
