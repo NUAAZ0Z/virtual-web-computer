@@ -27,14 +27,14 @@
         </div>
         <div class="chat-message">
           <ChatMessage
-              v-for="message in chatMessages" :key="message._id" :from="message.sender"
-              :msg="message.content" :type="message.type || 'chat'" :left="sessionId!==message.sender"
+            v-for="message in chatMessages" :key="message._id" :from="message.sender"
+            :msg="message.content" :type="message.type || 'chat'" :left="sessionId!==message.sender"
           />
         </div>
         <div class="chat-editor">
           <textarea
-              v-model="inputMsg" placeholder="在此输入...Enter 发送" aria-multiline="true"
-              @keyup.enter="sendMsg"
+            v-model="inputMsg" placeholder="在此输入...Enter 发送" aria-multiline="true"
+            @keyup.enter="sendMsg"
           />
           <div class="send-btn" @click="sendMsg">
             发送
